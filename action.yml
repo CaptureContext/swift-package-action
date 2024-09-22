@@ -1,0 +1,49 @@
+name: 'swift-package'
+description: "Set of utils for CI of multiplatform swift packages"
+author: 'capturecontext'
+inputs:
+  command:
+    description: "make command to run"
+    required: true
+  subcommand:
+    description: "COMMAND argument for make action"
+    required: false
+    default: ''
+  scheme:
+    description: "Base scheme"
+    required: true
+  platform:
+    description: "Platform for make action"
+    required: false
+  config:
+    description: "Config for xcodebuild cli"
+    required: false
+    default: "debug"
+  working-directory:
+    description: "Where to run the action"
+    required: false
+    default: '.'
+  platforms:
+    description: "Platforms for `loop-platforms` make action"
+    required: false
+  target:
+    description: "Target command for `loop-platforms` make action"
+    required: false
+branding:
+  icon: 'package'
+  color: 'gray-dark'
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        cd "${{ inputs.working-directory }}"
+        make ${{ inputs.command }} \
+          -f "$GITHUB_ACTION_PATH"/Makefile \
+          MAKEFILE_PATH="$GITHUB_ACTION_PATH"/Makefile \
+          COMMAND="${{ inputs.subcommand }}" \
+          CONFIG="${{ inputs.config }}" \
+          SCHEME="${{ inputs.scheme }}" \
+          PLATFORM="${{ inputs.platform }}" \
+          PLATFORMS="${{ inputs.platforms }}" \
+          GOAL="${{ inputs.target }}"
