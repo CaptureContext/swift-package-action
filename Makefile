@@ -25,7 +25,7 @@ PLATFORMS ?= "$(PLATFORM)"
 loop-platforms:
 	@$(eval MAKEFILE_PATH ?= "./Makefile")
 	@$(eval platforms := $(shell echo $(PLATFORMS) | sed 's/,/ /g'))
-	@$(foreach platform,$(platforms),$(MAKE) -f $(MAKEFILE_PATH) $(GOAL) PLATFORM=$(platform);)
+	@$(foreach platform,$(platforms),$(MAKE) -f $(MAKEFILE_PATH) $(GOAL) PLATFORM=$(platform) &&) true
 
 xcodebuild:
 	$(call run_xcodebuild,$(SCHEME))
@@ -98,14 +98,14 @@ define run_xcodebuild
 	@echo "$(BOLD)Scheme:$(RESET) $(CURRENT_SCHEME) ($(CONFIG))"
 	@echo "$(BOLD)Platform:$(RESET) $(CURRENT_PLATFORM)\n"
 	
-	xcodebuild \
+	set -o pipefail && xcodebuild \
 		-skipMacroValidation \
 		-configuration $(CONFIG) \
 		-workspace .github/package.xcworkspace \
 		-scheme $(CURRENT_SCHEME) \
 		-destination platform="$(CURRENT_PLATFORM)" \
 		-derivedDataPath "$(DERIVED_DATA)/$(CONFIG)" \
-		$(COMMAND) | xcpretty || exit 1
+		$(COMMAND) | xcpretty
 endef
 
 define resolve_platform
