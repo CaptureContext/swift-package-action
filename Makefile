@@ -12,7 +12,7 @@ PLATFORM_MAC_CATALYST ?= macOS,variant=Mac Catalyst
 PLATFORM_TVOS ?= tvOS Simulator,id=$(call udid_for,tvOS,TV)
 PLATFORM_VISIONOS ?= visionOS Simulator,id=$(call udid_for,visionOS,Vision)
 PLATFORM_WATCHOS ?= watchOS Simulator,id=$(call udid_for,watchOS,Watch)
-DERIVED_DATA ?= "~/.derivedData"
+DERIVED_DATA ?= ~/.derivedData
 
 GREEN=\033[0;32m
 RED=\033[0;31m

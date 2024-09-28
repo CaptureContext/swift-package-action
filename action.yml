@@ -41,9 +41,9 @@ runs:
         make ${{ inputs.command }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
           MAKEFILE_PATH="$GITHUB_ACTION_PATH"/Makefile \
-          COMMAND="${{ inputs.subcommand }}" \
-          CONFIG="${{ inputs.config }}" \
-          SCHEME="${{ inputs.scheme }}" \
-          PLATFORM="${{ inputs.platform }}" \
-          PLATFORMS="${{ inputs.platforms }}" \
-          GOAL="${{ inputs.target }}"
+          COMMAND=${{ inputs.subcommand }} \
+          CONFIG=${{ inputs.config }} \
+          SCHEME=${{ inputs.scheme }} \
+          PLATFORM=${{ inputs.platform }} \
+          PLATFORMS=${{ inputs.platforms }} \
+          GOAL=${{ inputs.target }}
