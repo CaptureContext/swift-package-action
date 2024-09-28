@@ -97,7 +97,7 @@ define run_xcodebuild
 	@echo "\n$(BOLD)$(FORMATTED_COMMAND)$(RESET)"
 	@echo "$(BOLD)Scheme:$(RESET) $(CURRENT_SCHEME) ($(CONFIG))"
 	@echo "$(BOLD)Platform:$(RESET) $(CURRENT_PLATFORM)\n"
-	
+
 	set -o pipefail && xcodebuild \
 		-skipMacroValidation \
 		-configuration $(CONFIG) \
