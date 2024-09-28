@@ -97,7 +97,19 @@ define run_xcodebuild
 	@echo "\n$(BOLD)$(FORMATTED_COMMAND)$(RESET)"
 	@echo "$(BOLD)Scheme:$(RESET) $(CURRENT_SCHEME) ($(CONFIG))"
 	@echo "$(BOLD)Platform:$(RESET) $(CURRENT_PLATFORM)\n"
+
+	@echo "Available destinations:"
+
+	@xcodebuild -showdestinations \
+		-skipMacroValidation \
+		-configuration $(CONFIG) \
+		-workspace .github/package.xcworkspace \
+		-scheme $(CURRENT_SCHEME) \
+		-derivedDataPath "$(DERIVED_DATA)/$(CONFIG)" \
+		$(COMMAND) | grep "platform:$(PLATFORM)"
 	
+	@echo ""
+
 	set -o pipefail && xcodebuild \
 		-skipMacroValidation \
 		-configuration $(CONFIG) \
