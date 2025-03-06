@@ -2,48 +2,95 @@ name: 'swift-package'
 description: "Set of utils for CI of multiplatform swift packages"
 author: 'capturecontext'
 inputs:
+  xcode:
+    description: Xcode version
+    required: false
+    default: '16.2'
+  cache-derived-data:
+    description: "Specifies if DerivedData should be cached"
+    required: false
+    default: 'false'
   command:
-    description: "make command to run"
+    description: "MAKE command to run"
     required: true
   subcommand:
     description: "COMMAND argument for make action"
     required: false
     default: ''
+  workspace:
+    description: "Path to xcworkspace for xcodebuild actions"
+    required: false
+    default: '.swiftpm/xcode/package.xcworkspace'
   scheme:
-    description: "Base scheme"
-    required: true
+    description: "Scheme"
+    required: false
+    default: '__unspecified__'
   platform:
-    description: "Platform for make action"
+    description: "Platform"
     required: false
+    default: '__unspecified__'
   config:
-    description: "Config for xcodebuild cli"
+    description: "Config"
     required: false
-    default: "debug"
+    default: "Debug"
+  beautify:
+    description: "Beautify"
+    required: false
+    default: 'quiet'
   working-directory:
     description: "Where to run the action"
     required: false
     default: '.'
-  platforms:
-    description: "Platforms for `loop-platforms` make action"
-    required: false
-  target:
-    description: "Target command for `loop-platforms` make action"
-    required: false
 branding:
   icon: 'package'
   color: 'gray-dark'
 runs:
   using: "composite"
   steps:
-    - shell: bash
+    - name: Select Xcode ${{ inputs.xcode }}
+      shell: bash
+      run: sudo xcode-select -s /Applications/Xcode_${{ inputs.xcode }}.app
+    - name: Install visionOS runtime
+      if: inputs.platform == 'visionOS'
+      shell: bash
+      run: |
+        sudo xcodebuild -runFirstLaunch
+        sudo xcrun simctl list
+        sudo xcodebuild -downloadPlatform visionOS
+        sudo xcodebuild -runFirstLaunch
+    - name: List available devices
+      shell: bash
+      run: xcrun simctl list devices available
+    - name: Cache derived data
+      if: inputs.cache-derived-data == 'true'
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.derivedData
+        key: |
+          deriveddata-xcodebuild-${{ inputs.platform }}-${{ inputs.xcode }}-${{ inputs.subcommand }}-${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
+        restore-keys: |
+          deriveddata-xcodebuild-${{ inputs.platform }}-${{ inputs.xcode }}-${{ inputs.subcommand }}-
+    - name: Set IgnoreFileSystemDeviceInodeChanges flag
+      shell: bash
+      run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
+    - name: Update mtime for incremental builds
+      uses: chetan/git-restore-mtime-action@v2
+    - name: Run ${{ inputs.command }}
+      shell: bash
       run: |
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.command }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
-          MAKEFILE_PATH="$GITHUB_ACTION_PATH"/Makefile \
-          COMMAND=${{ inputs.subcommand }} \
-          CONFIG=${{ inputs.config }} \
-          SCHEME=${{ inputs.scheme }} \
-          PLATFORM=${{ inputs.platform }} \
-          PLATFORMS=${{ inputs.platforms }} \
-          GOAL=${{ inputs.target }}
+          WORKSPACE="${{ inputs.workspace }}" \
+          COMMAND="${{ inputs.subcommand }}" \
+          SCHEME="${{ inputs.scheme }}" \
+          PLATFORM="${{ inputs.platform }}" \
+          CONFIG="${{ inputs.config }}" \
+          BEAUTIFY="${{ inputs.beautify }}"
+    - name: Commit swift-format
+      if: inputs.command == 'swift-format'
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "[swift-format]"
+        branch: 'main'

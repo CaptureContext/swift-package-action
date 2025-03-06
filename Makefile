@@ -1,144 +1,130 @@
-default:
-	$(error Missing command)
-	@exit 1
+DERIVED_DATA_PATH = ~/.derivedData/$(CONFIG)
 
-%:
-	$(error Unknown command: $@)
-	@exit 1
+PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS,iPhone \d\+ Pro [^M])
+PLATFORM_MACOS = macOS
+PLATFORM_MAC_CATALYST = macOS,variant=Mac Catalyst
+PLATFORM_TVOS = tvOS Simulator,id=$(call udid_for,tvOS,TV)
+PLATFORM_VISIONOS = visionOS Simulator,id=$(call udid_for,visionOS,Vision)
+PLATFORM_WATCHOS = watchOS Simulator,id=$(call udid_for,watchOS,Watch)
 
-PLATFORM_IOS ?= iOS Simulator,id=$(call udid_for,iOS,iPhone \d\+ Pro [^M])
-PLATFORM_MACOS ?= macOS
-PLATFORM_MAC_CATALYST ?= macOS,variant=Mac Catalyst
-PLATFORM_TVOS ?= tvOS Simulator,id=$(call udid_for,tvOS,TV)
-PLATFORM_VISIONOS ?= visionOS Simulator,id=$(call udid_for,visionOS,Vision)
-PLATFORM_WATCHOS ?= watchOS Simulator,id=$(call udid_for,watchOS,Watch)
-DERIVED_DATA ?= ~/.derivedData
+ifeq ($(PLATFORM),iOS)
+	DESTINATION = "$(PLATFORM_IOS)"
+else ifeq ($(PLATFORM),macOS)
+	DESTINATION = "$(PLATFORM_MACOS)"
+else ifeq ($(PLATFORM),tvOS)
+	DESTINATION = "$(PLATFORM_TVOS)"
+else ifeq ($(PLATFORM),watchOS)
+	DESTINATION = "$(PLATFORM_WATCHOS)"
+else ifeq ($(PLATFORM),visionOS)
+	DESTINATION = "$(PLATFORM_VISIONOS)"
+else ifeq ($(PLATFORM),macCatalyst)
+	DESTINATION = "$(PLATFORM_MAC_CATALYST)"
+else
+	DESTINATION = __unsupported__
+endif
 
-GREEN=\033[0;32m
-RED=\033[0;31m
-BOLD=\033[1m
-RESET=\033[0m
+PLATFORM_ID = $(shell echo "$(DESTINATION)" | sed -E "s/.+,id=(.+)/\1/")
 
-RESOLVED_PLATFORM ?= $(call resolve_platform,$(PLATFORM))
-PLATFORMS ?= "$(PLATFORM)"
+SCHEME = Unspecified
+WORKSPACE = ".swiftpm/xcode/package.xcworkspace"
 
-loop-platforms:
-	@$(eval MAKEFILE_PATH ?= "./Makefile")
-	@$(eval platforms := $(shell echo $(PLATFORMS) | sed 's/,/ /g'))
-	@$(foreach platform,$(platforms),$(MAKE) -f $(MAKEFILE_PATH) $(GOAL) PLATFORM=$(platform) &&) true
+ifeq ($(BEAUTIFY),true)
+	XCBEAUTIFY = xcbeautify
+	XCBEAUTIFY_COMMAND = xcbeautify
+else ifeq ($(BEAUTIFY),quiet)
+	XCBEAUTIFY = xcbeautify
+	XCBEAUTIFY_COMMAND = xcbeautify --quiet
+else
+	XCBEAUTIFY = __do_not_beautify__
+endif
 
-xcodebuild:
-	$(call run_xcodebuild,$(SCHEME))
+XCODEBUILD_FLAGS = \
+	-configuration $(CONFIG) \
+	-derivedDataPath $(DERIVED_DATA_PATH) \
+	-destination=$(DESTINATION) \
+	-scheme "$(SCHEME)" \
+	-skipMacroValidation \
+	-workspace $(WORKSPACE)
 
-xcodebuild-macros:
-	$(call run_xcodebuild,$(SCHEME)Macros)
+XCODEBUILD_COMMAND = xcodebuild $(COMMAND) $(XCODEBUILD_FLAGS)
 
-xcodebuild-macros-plugin:
-	$(call run_xcodebuild,$(SCHEME)MacrosPlugin)
+ifneq ($(strip $(shell which $(XCBEAUTIFY))),)
+	XCODEBUILD = set -o pipefail && $(XCODEBUILD_COMMAND) | $(XCBEAUTIFY_COMMAND)
+else
+	XCODEBUILD = $(XCODEBUILD_COMMAND)
+endif
+
+TEST_RUNNER_CI = $(CI)
+
+warm-simulator:
+	@echo "Running warm-simulator for $(PLATFORM)"
+	@test "$(PLATFORM_ID)" != "" \
+		&& xcrun simctl boot $(PLATFORM_ID) \
+		&& open -a Simulator --args -CurrentDeviceUDID $(PLATFORM_ID) \
+		|| exit 0
+
+xcodebuild: warm-simulator
+	@echo "Running xcodebuild for $(PLATFORM)"
+	@echo "  Workspace: $(WORKSPACE)"
+	@echo "  Scheme: $(SCHEME)"
+	@echo "  Config: $(CONFIG)"
+	@echo "  Destination: $(DESTINATION)"
+	@echo "  DerivedData: $(DERIVED_DATA_PATH)"
+	$(XCODEBUILD)
+
+# Workaround for debugging Swift Testing tests: https://github.com/cpisciotta/xcbeautify/issues/313
+xcodebuild-raw: warm-simulator
+	@echo "Running xcodebuild-raw for $(PLATFORM)"
+	@echo "  Workspace: $(WORKSPACE)"
+	@echo "  Scheme: $(SCHEME)"
+	@echo "  Config: $(CONFIG)"
+	@echo "  Destination: $(DESTINATION)"
+	@echo "  DerivedData: $(DERIVED_DATA_PATH)"
+	$(XCODEBUILD_COMMAND)
 
 build-for-library-evolution:
-	@swift build \
+	@echo "Running build-for-library-evolution for $(SCHEME)"
+	swift build \
+		-q \
 		-c release \
-		--target "$(SCHEME)" \
+		--target ${SCHEME} \
 		-Xswiftc -emit-module-interface \
 		-Xswiftc -enable-library-evolution
 
-#workaround for instant echo output
-test-docs-start:
-	@echo "$(BOLD)Testing$(RESET) Documentation"
-	
-test-docs: test-docs-start
-	$(shell \
-		export DOC_WARNINGS = xcodebuild clean docbuild \
-			-scheme "$(SCHEME)" \
-			-destination platform="$(RESOLVED_PLATFORM)" \
-			-quiet 2>&1 \
-			| grep "couldn't be resolved to known documentation" \
-			| sed 's|$(PWD)|.|g' \
-			| tr '\n' '\1' \
-	)
-	@test "$(DOC_WARNINGS)" = "" \
-		|| (echo "$(BOLD)$(RED)xcodebuild docbuild failed:$(RESET)\n\n$(DOC_WARNINGS)" | tr '\1' '\n' \
-		&& exit 1)
-	@echo "$(GREEN)$(BOLD)Documentation tests succeeded$(RESET)"
-
-test-example:
-	@xcodebuild test \
-		-skipMacroValidation \
-		-scheme "$(SCHEME)" \
-		-destination platform="$(RESOLVED_PLATFORM)" \
-		-derivedDataPath $(DERIVED_DATA)
-
-test-integration:
-	@xcodebuild test \
-		-skipMacroValidation \
-		-scheme "$(SCHEME)" \
-		-destination platform="$(RESOLVED_PLATFORM)"
-
 benchmark:
-	@swift run --configuration release \
-		swift-composable-architecture-benchmark
+	@echo "Running benchmark for $(SCHEME)"
+	swift run --configuration release $(SCHEME)
 
-format:
-	@find . \
+swift-format:
+	@echo "Running swift-format"
+	find . \
 		-path '*/Documentation.docc' -prune -o \
 		-name '*.swift' \
 		-not -path '*/.*' -print0 \
 		| xargs -0 swift format --ignore-unparsable-files --in-place
 
-define run_xcodebuild
-	@$(eval BASE_SCHEME := $(1))
-	@$(eval TEST_SCHEME := $(1)Tests)
-	@$(eval CURRENT_SCHEME = $(if $(filter $(COMMAND),test),$(TEST_SCHEME),$(BASE_SCHEME)))
-	@$(eval CURRENT_PLATFORM := $(RESOLVED_PLATFORM))
-	@$(if $(filter $(CURRENT_PLATFORM), Unsupported), $(error Unsupported platform: $(PLATFORM)))
+DOC_WARNINGS = $(shell \
+	xcodebuild clean docbuild \
+		-scheme "$(SCHEME)" \
+		-destination platform="$(DESTINATION)" \
+		-quiet 2>&1 \
+		| grep "couldn't be resolved to known documentation" \
+		| sed 's|$(PWD)|.|g' \
+		| tr '\n' '\1' \
+)
 
-	@$(eval FORMATTED_COMMAND = $(if $(filter $(COMMAND),test),xcodebuild (test),xcodebuild))
-	@echo "\n$(BOLD)$(FORMATTED_COMMAND)$(RESET)"
-	@echo "$(BOLD)Scheme:$(RESET) $(CURRENT_SCHEME) ($(CONFIG))"
-	@echo "$(BOLD)Platform:$(RESET) $(CURRENT_PLATFORM)\n"
+test-docs:
+	@echo "Running test-docs for $(SCHEME) [$(PLATFORM)]"
+	@test "$(DOC_WARNINGS)" = "" \
+		|| (echo "xcodebuild docbuild failed:\n\n$(DOC_WARNINGS)" | tr '\1' '\n' \
+		&& exit 1)
 
-	@echo "Available destinations:"
+github-build-docs:
+	@echo "Running github-build-docs for $(SCHEME)"
+	@chmod +x '.scripts/github-build-docs'
+	SCHEME=$(SCHEME) ./.scripts/github-build-docs
 
-	@xcodebuild -showdestinations \
-		-skipMacroValidation \
-		-configuration $(CONFIG) \
-		-workspace .github/package.xcworkspace \
-		-scheme $(CURRENT_SCHEME) \
-		-derivedDataPath "$(DERIVED_DATA)/$(CONFIG)" \
-		$(COMMAND) | grep "platform:$(PLATFORM)"
-	
-	@echo ""
-
-	set -o pipefail && xcodebuild \
-		-skipMacroValidation \
-		-configuration $(CONFIG) \
-		-workspace .github/package.xcworkspace \
-		-scheme $(CURRENT_SCHEME) \
-		-destination platform="$(CURRENT_PLATFORM)" \
-		-derivedDataPath "$(DERIVED_DATA)/$(CONFIG)" \
-		$(COMMAND) | xcpretty
-endef
-
-define resolve_platform
-	$(shell \
-		if [ "$(1)" = "iOS" ]; then \
-			echo $(PLATFORM_IOS); \
-		elif [ "$(1)" = "macOS" ]; then \
-			echo $(PLATFORM_MACOS); \
-		elif [ "$(1)" = "macCatalyst" ]; then \
-			echo $(PLATFORM_MAC_CATALYST); \
-		elif [ "$(1)" = "watchOS" ]; then \
-			echo $(PLATFORM_WATCHOS); \
-		elif [ "$(1)" = "tvOS" ]; then \
-			echo $(PLATFORM_TVOS); \
-		elif [ "$(1)" = "visionOS" ]; then \
-			echo $(PLATFORM_VISIONOS); \
-		else \
-			echo "Unsupported"; \
-		fi \
-	)
-endef
+.PHONY: build-for-library-evolution format warm-simulator xcodebuild xcodebuild-raw test-docs
 
 define udid_for
 $(shell \
@@ -149,3 +135,7 @@ $(shell \
 	| awk -F '[()]' '{ print $$(NF-3) }' \
 )
 endef
+
+# simple action for testing if Makefile is valid
+ping:
+	@echo "pong 🏓"
