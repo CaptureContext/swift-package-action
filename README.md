@@ -5,36 +5,32 @@
 <h1 align="center">
   swift-package-action
 </h1>
-<p align="center" style="font-size: 18px;">
-  <span style="color:#808080;">
-    Set of predefined commands for multiplatform Swift packages.
-  </span>
-</p>
+<h5 align="center">
+  Set of predefined commands for multiplatform Swift packages.
+</h5>
 
 <p align="center" style="padding: 0 80px;">
-  <span style="color:#808080CC;">
-      This repository was inspired by <a href="https://github.com/pointfreeco/swift-composable-architecture">The Composable Architecture</a>. If you develop a bunch swift packages it may be tricky to keep CI clean and updated for all of them, but a dedicated action can reduce code duplication and simplify CI support.
-  </span>
+    <i>If you develop a bunch swift packages it may be tricky to keep CI clean and updated for all of them, but a dedicated action can reduce code duplication and simplify CI support. This repository was inspired by CI setup of <a href="https://github.com/pointfreeco/swift-composable-architecture">The Composable Architecture</a>.</i>
 </p>
 
 
 
 
-## Getting started ✈️
+## Getting started 🚀
 
 You can include the action in your workflow to trigger on any event that [GitHub actions supports](https://help.github.com/en/articles/events-that-trigger-workflows).
 
 The `with` portion of the workflow **must** be configured for the action.
 
+</br>
 
+### ⌘ `with.command`
 
-### `with.command`
+_Command for the action, basically it's the name of `MAKE` workflow. For additional details check out [Makefile](Makefile)_
 
-Command for the action, basically it's the name of `MAKE` workflow. For additional details check out [Makefile](Makefile)
+**Type:** `required`
 
-##### Type: `required`
-
-##### Supported values:
+**Supported values:**
 
 - `xcodebuild`
 - `xcodebuild-raw`
@@ -48,75 +44,77 @@ Command for the action, basically it's the name of `MAKE` workflow. For addition
   - _Commits changes to_ `main` _branch, this behavior is not configurable, at least yet_
   - _Commit message is_ `[swift-format]` _and is not configurable, at least yet_
 
-### `with.subcommand`
+</br>
 
-Subcommand for the action, basically only used as argument for `xcodebuild`/`xcodebuild-raw` commands
+### ⌘ `with.subcommand`
 
-##### Type: `optional`
+_Subcommand for the action, basically only used as argument for `xcodebuild`/`xcodebuild-raw` commands_
 
-##### Default value: `''`
+**Type:** `optional`
 
-##### Supported values:
+**Default value:** `''`
+
+**Supported values:**
 
 - `''`
 - `test`
 - _any other xcodebuild argument_
 
+</br>
 
+### ⌘ `with.xcode`
 
-### `with.xcode`
+_Xcode version_
 
-Xcode version
+**Type:** `optional`
 
-##### Type: `optional`
+**Default value:** `16.2`
 
-##### Default value: `16.2`
+</br>
 
+### ⌘ `with.cache-derived-data`
 
+_Argument that specifies if action should cache DerivedData_
 
-### `with.cache-derived-data`
+**Type:** `optional`
 
-Argument that specifies if action should cache DerivedData
+**Default value:** `false`
 
-##### Type: `optional`
-
-##### Default value: `false`
-
-##### Supported values:
+**Supported values:**
 
 - `false`
 - `true`
 
+</br>
 
+### ⌘ `with.workspace`
 
-### `with.workspace`
+_Path to xcworkspace. It is recommended to create a workspace at the root of the package and ensure that all required schemes are present._
 
-Path to xcworkspace. It is recommended to create a workspace at the root of the package and ensure that all required schemes are present.
+**Type:** `optional`
 
-##### Type: `optional`
+**Default value:** `.swiftpm/xcode/package.xcworkspace`
 
-##### Default value: `.swiftpm/xcode/package.xcworkspace`
+</br>
 
+### ⌘ `with.scheme`
 
-
-### `with.scheme`
-
-Scheme/PackageTarget for the action.
+_Scheme/PackageTarget for the action._
 
 >  `<package-name>-package` _usually suits for building and for testing_
 
-##### Type:
+**Type:**
 
 - **`required`**
 - **`optional`** for `swift-format` command
 
+</br>
 
+### ⌘ `with.platform`
 
-### `with.platform`
+_Target platform for the action_
 
-Target platform for the action
-
-##### Type:
+**Type:**
 
 - **`optional`**
 - **`required`** for the following commands
@@ -124,7 +122,7 @@ Target platform for the action
   - `xcodebuild-raw`
   - `test-docs`
 
-##### Supported values:
+**Supported values:**
 
 - `iOS`
 - `macOS`
@@ -133,45 +131,45 @@ Target platform for the action
 - `tvOS`
 - `visionOS`
 
+</br>
 
+### ⌘ `with.config`
 
-### `with.config`
+_Build configuration for the action._
 
-Build configuration for the action.
+**Type:** `optional`
 
-##### Type: `optional`
+**Default value:** `Debug`
 
-##### Default value: `Debug`
+</br>
 
+### ⌘ `with.beautify`
 
+_Specifies if xcodebuild output should be beautified. Uses [`xcbeautify`](https://github.com/cpisciotta/xcbeautify)_
 
-### `with.beautify`
+**Type:** `optional`
 
-Specifies if xcodebuild output should be beautified. Uses [`xcbeautify`](https://github.com/cpisciotta/xcbeautify)
+**Default value:** `quiet`
 
-##### Type: `optional`
-
-##### Default value: `quiet`
-
-##### Supported values:
+**Supported values:**
 
 - `quiet`
 - `true`
 - `false`
 
+</br>
 
+### ⌘ `with.working-directory`
 
-### `with.working-directory`
+_Relative path to target directory_
 
-Relative path to target directory
+**Type:** `optional`
 
-##### Type: `optional`
+**Default value:** `'.'`
 
-##### Default value: `'.'`
+</br>
 
-
-
-### Step examples:
+### 🧩 Step examples:
 
 #### Full:
 
@@ -192,7 +190,7 @@ Relative path to target directory
     working-directory: '.'
 ```
 
-##### Short:
+#### Short:
 
 ```yaml
 - name: Test CoolStuff
@@ -208,14 +206,15 @@ Relative path to target directory
 
 
 
-### Workflow examples
+### 📚 Workflow examples
 
-- **_[Original](https://github.com/pointfreeco/swift-composable-architecture/blob/main/.github/workflows/ci.yml)_**
-- **_[SwiftPackageAction](https://github.com/capturecontext/swift-composable-architecture-ci-explorations/blob/main/.github/workflows/ci.yml)_**
+- [**`swift-existential-container`**](https://github.com/capturecontext/swift-existential-container/blob/main/.github/workflows/ci.yml)
+- `swift-composable-architecture`
+  - **_[Original](https://github.com/pointfreeco/swift-composable-architecture/blob/main/.github/workflows/ci.yml)_**
+  - **_[SwiftPackageAction](https://github.com/capturecontext/swift-composable-architecture-ci-explorations/blob/main/.github/workflows/ci.yml)_**
 
 
-
-## License
+## License 🪪
 
 This action is released under the MIT license. See [LICENSE](LICENSE) for details.
 
