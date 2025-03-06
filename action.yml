@@ -48,15 +48,18 @@ runs:
   using: "composite"
   steps:
     - name: Select Xcode ${{ inputs.xcode }}
+      shell: bash
       run: sudo xcode-select -s /Applications/Xcode_${{ inputs.xcode }}.app
     - name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
+      shell: bash
       run: |
         sudo xcodebuild -runFirstLaunch
         sudo xcrun simctl list
         sudo xcodebuild -downloadPlatform visionOS
         sudo xcodebuild -runFirstLaunch
     - name: List available devices
+      shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
       if: inputs.cache-derived-data == 'true'
@@ -69,6 +72,7 @@ runs:
         restore-keys: |
           deriveddata-xcodebuild-${{ inputs.platform }}-${{ inputs.xcode }}-${{ inputs.subcommand }}-
     - name: Set IgnoreFileSystemDeviceInodeChanges flag
+      shell: bash
       run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
     - name: Update mtime for incremental builds
       uses: chetan/git-restore-mtime-action@v2
@@ -78,14 +82,14 @@ runs:
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.command }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
-          WORKSPACE="${{ inputs.workspace }}"
+          WORKSPACE="${{ inputs.workspace }}" \
           COMMAND="${{ inputs.subcommand }}" \
           SCHEME="${{ inputs.scheme }}" \
           PLATFORM="${{ inputs.platform }}" \
           CONFIG="${{ inputs.config }}" \
-          BEAUTIFY="${{ inputs.beautify }}" \"
+          BEAUTIFY="${{ inputs.beautify }}"
     - name: Commit swift-format
-      if: input.command == 'swift-format'
+      if: inputs.command == 'swift-format'
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "[swift-format]"

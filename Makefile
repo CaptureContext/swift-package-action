@@ -8,46 +8,45 @@ PLATFORM_VISIONOS = visionOS Simulator,id=$(call udid_for,visionOS,Vision)
 PLATFORM_WATCHOS = watchOS Simulator,id=$(call udid_for,watchOS,Watch)
 
 ifeq ($(PLATFORM),iOS)
-  DESTINATION = $(PLATFORM_IOS)
+	DESTINATION = "$(PLATFORM_IOS)"
 else ifeq ($(PLATFORM),macOS)
-  DESTINATION = $(PLATFORM_MACOS)
+	DESTINATION = "$(PLATFORM_MACOS)"
 else ifeq ($(PLATFORM),tvOS)
-  DESTINATION = $(PLATFORM_TVOS)
+	DESTINATION = "$(PLATFORM_TVOS)"
 else ifeq ($(PLATFORM),watchOS)
-  DESTINATION = $(PLATFORM_WATCHOS)
+	DESTINATION = "$(PLATFORM_WATCHOS)"
 else ifeq ($(PLATFORM),visionOS)
-  DESTINATION = $(PLATFORM_VISIONOS)
+	DESTINATION = "$(PLATFORM_VISIONOS)"
 else ifeq ($(PLATFORM),macCatalyst)
-  DESTINATION = $(PLATFORM_MAC_CATALYST)
+	DESTINATION = "$(PLATFORM_MAC_CATALYST)"
 else
-  DESTINATION = __unsupported__
+	DESTINATION = __unsupported__
 endif
 
 PLATFORM_ID = $(shell echo "$(DESTINATION)" | sed -E "s/.+,id=(.+)/\1/")
 
 SCHEME = Unspecified
 WORKSPACE = ".swiftpm/xcode/package.xcworkspace"
-XCODEBUILD_ARGUMENT = $(COMMAND)
 
 ifeq ($(BEAUTIFY),true)
-  XCBEAUTIFY = xcbeautify
-  XCBEAUTIFY_COMMAND = xcbeautify
+	XCBEAUTIFY = xcbeautify
+	XCBEAUTIFY_COMMAND = xcbeautify
 else ifeq ($(BEAUTIFY),quiet)
-  XCBEAUTIFY = xcbeautify
-  XCBEAUTIFY_COMMAND = xcbeautify --quiet
+	XCBEAUTIFY = xcbeautify
+	XCBEAUTIFY_COMMAND = xcbeautify --quiet
 else
-  XCBEAUTIFY = __do_not_beautify__
+	XCBEAUTIFY = __do_not_beautify__
 endif
 
 XCODEBUILD_FLAGS = \
 	-configuration $(CONFIG) \
 	-derivedDataPath $(DERIVED_DATA_PATH) \
-	-destination $(DESTINATION) \
+	-destination=$(DESTINATION) \
 	-scheme "$(SCHEME)" \
 	-skipMacroValidation \
 	-workspace $(WORKSPACE)
 
-XCODEBUILD_COMMAND = xcodebuild $(XCODEBUILD_ARGUMENT) $(XCODEBUILD_FLAGS)
+XCODEBUILD_COMMAND = xcodebuild $(COMMAND) $(XCODEBUILD_FLAGS)
 
 ifneq ($(strip $(shell which $(XCBEAUTIFY))),)
 	XCODEBUILD = set -o pipefail && $(XCODEBUILD_COMMAND) | $(XCBEAUTIFY_COMMAND)
@@ -58,19 +57,33 @@ endif
 TEST_RUNNER_CI = $(CI)
 
 warm-simulator:
+	@echo "Running warm-simulator for $(PLATFORM)"
 	@test "$(PLATFORM_ID)" != "" \
 		&& xcrun simctl boot $(PLATFORM_ID) \
 		&& open -a Simulator --args -CurrentDeviceUDID $(PLATFORM_ID) \
 		|| exit 0
 
 xcodebuild: warm-simulator
+	@echo "Running xcodebuild for $(PLATFORM)"
+	@echo "  Workspace: $(WORKSPACE)"
+	@echo "  Scheme: $(SCHEME)"
+	@echo "  Config: $(CONFIG)"
+	@echo "  Destination: $(DESTINATION)"
+	@echo "  DerivedData: $(DERIVED_DATA_PATH)"
 	$(XCODEBUILD)
 
 # Workaround for debugging Swift Testing tests: https://github.com/cpisciotta/xcbeautify/issues/313
 xcodebuild-raw: warm-simulator
+	@echo "Running xcodebuild-raw for $(PLATFORM)"
+	@echo "  Workspace: $(WORKSPACE)"
+	@echo "  Scheme: $(SCHEME)"
+	@echo "  Config: $(CONFIG)"
+	@echo "  Destination: $(DESTINATION)"
+	@echo "  DerivedData: $(DERIVED_DATA_PATH)"
 	$(XCODEBUILD_COMMAND)
 
 build-for-library-evolution:
+	@echo "Running build-for-library-evolution for $(SCHEME)"
 	swift build \
 		-q \
 		-c release \
@@ -79,9 +92,11 @@ build-for-library-evolution:
 		-Xswiftc -enable-library-evolution
 
 benchmark:
+	@echo "Running benchmark for $(SCHEME)"
 	swift run --configuration release $(SCHEME)
 
 swift-format:
+	@echo "Running swift-format"
 	find . \
 		-path '*/Documentation.docc' -prune -o \
 		-name '*.swift' \
@@ -99,13 +114,15 @@ DOC_WARNINGS = $(shell \
 )
 
 test-docs:
+	@echo "Running test-docs for $(SCHEME) [$(PLATFORM)]"
 	@test "$(DOC_WARNINGS)" = "" \
 		|| (echo "xcodebuild docbuild failed:\n\n$(DOC_WARNINGS)" | tr '\1' '\n' \
 		&& exit 1)
 
 github-build-docs:
-  @chmod +x .scripts/github-build-docs
-  SCHEME=$(SCHEME) ./.scripts/github-build-docs
+	@echo "Running github-build-docs for $(SCHEME)"
+	@chmod +x '.scripts/github-build-docs'
+	SCHEME=$(SCHEME) ./.scripts/github-build-docs
 
 .PHONY: build-for-library-evolution format warm-simulator xcodebuild xcodebuild-raw test-docs
 
@@ -118,3 +135,7 @@ $(shell \
 	| awk -F '[()]' '{ print $$(NF-3) }' \
 )
 endef
+
+# simple action for testing if Makefile is valid
+ping:
+	@echo "pong 🏓"
