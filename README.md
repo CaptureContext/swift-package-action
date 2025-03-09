@@ -36,14 +36,20 @@ _Command for the action, basically it's the name of `MAKE` workflow. For additio
 - `xcodebuild-raw`
 - `build-for-library-evolution`
 - `test-docs`
+  - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `benchmark`
+  - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `github-build-docs`
+  - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `swift-format`
+  - [_`unchecked`_] for @2.0, but should work fine
   - _Requires GitHub Secrets to be set up for committing changes_
   - _Uses [swift-format](https://github.com/swiftlang/swift-format)_
   - _Commits changes to_ `main` _branch, this behavior is not configurable, at least yet_
   - _Commit message is_ `[swift-format]` _and is not configurable, at least yet_
 
+> [!NOTE]
+> _Commands with `unchecked` and `experimental` tags is in todo for verification. These flags mean that at some point these commands were used locally, but their use on CI was not validated. Currently we're in the process of migrating our repos to this action, but not every package uses these commands, however any potential issues for those commands should be fixed soon._
 </br>
 
 ### ⌘ `with.subcommand`
