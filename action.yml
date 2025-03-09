@@ -9,7 +9,7 @@ inputs:
   cache-derived-data:
     description: "Specifies if DerivedData should be cached"
     required: false
-    default: 'false'
+    default: false
   command:
     description: "MAKE command to run"
     required: true
@@ -20,23 +20,23 @@ inputs:
   workspace:
     description: "Path to xcworkspace for xcodebuild actions"
     required: false
-    default: '.swiftpm/xcode/package.xcworkspace'
+    default: .swiftpm/xcode/package.xcworkspace
   scheme:
     description: "Scheme"
     required: false
-    default: '__unspecified__'
+    default: __unspecified__
   platform:
     description: "Platform"
     required: false
-    default: '__unspecified__'
+    default: __unspecified__
   config:
     description: "Config"
     required: false
-    default: "Debug"
+    default: Debug
   beautify:
     description: "Beautify"
     required: false
-    default: 'quiet'
+    default: quiet
   working-directory:
     description: "Where to run the action"
     required: false
@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: sudo xcode-select -s /Applications/Xcode_${{ inputs.xcode }}.app
     - name: Install visionOS runtime
-      if: inputs.platform == 'visionOS'
+      if: inputs.platform == visionOS
       shell: bash
       run: |
         sudo xcodebuild -runFirstLaunch
@@ -59,6 +59,7 @@ runs:
         sudo xcodebuild -downloadPlatform visionOS
         sudo xcodebuild -runFirstLaunch
     - name: List available devices
+      if: inputs.platform != __unspecified__
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
@@ -89,7 +90,7 @@ runs:
           CONFIG="${{ inputs.config }}" \
           BEAUTIFY="${{ inputs.beautify }}"
     - name: Commit swift-format
-      if: inputs.command == 'swift-format'
+      if: inputs.command == swift-format
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "[swift-format]"
