@@ -1,0 +1,61 @@
+name: 'swift-package-cache-save'
+description: 'Save Cache artifacts like dependencies and build outputs to improve workflow execution time'
+author: 'capturecontext'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+inputs:
+
+  # mark: - passthrough args
+
+  path:
+    description: 'A list of files, directories, and wildcard patterns to cache'
+    required: true
+  upload-chunk-size:
+    description: 'The chunk size used to split up large files during upload, in bytes'
+    required: false
+  enable-cross-os-archive:
+    description: 'An optional boolean when enabled, allows windows runners to save caches that can be restored on other platforms'
+    default: 'false'
+    required: false
+
+  # mark: - key-related args
+
+  prefix:
+    description: 'Prefix for caching key'
+    default: cache
+    required: false
+  arg1:
+    description: First argument
+    default: __unspecified__
+    required: false
+  arg2:
+    description: Second argument
+    default: __unspecified__
+    required: false
+  arg3:
+    description: Third argument
+    default: __unspecified__
+    required: false
+  arg4:
+    description: Fourth argument
+    default: __unspecified__
+    required: false
+  arg5:
+    description: Fifth argument
+    default: __unspecified__
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Save ${{ inputs.prefix }}
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ path }}
+        upload-chunk-size: ${{ upload-chunk-size }}
+        enableCrossOsArchive: ${{ enable-cross-os-archive }}
+        key: |
+          ${{ inputs.prefix }}-${{ inputs.arg1 == __unspecified__ && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == __unspecified__ && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == __unspecified__ && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == __unspecified__ && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == __unspecified__ && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == __unspecified__ && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}

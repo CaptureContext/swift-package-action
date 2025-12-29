@@ -1,0 +1,46 @@
+name: 'swift-package-cache-derived-data'
+description: 'Cache DerivedData'
+author: 'capturecontext'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+inputs:
+  path:
+    description: "Base path for DerivedData caching"
+    required: false
+    default: ~/.derivedData
+  prefix:
+    description: "Custom prefix for caching key"
+    required: false
+    default: __unspecified__
+  xcode:
+    description: Xcode version key
+    required: false
+    default: '16.2'
+  platform:
+    description: "Platform key"
+    required: false
+    default: __unspecified__
+  command:
+    description: "Command key"
+    required: false
+    default: __unspecified__
+  suffix:
+    description: "Suffix for caching key, likely to be files hash"
+    required: false
+    default: __unspecified__
+
+runs:
+  using: 'composite'
+  steps:
+  - name: Cache DerivedData
+    uses: ../cache
+    with:
+      path: ${{ inputs.path }}
+      prefix: ${{ inputs.prefix }}
+      arg1: ${{ inputs.platform }}
+      arg2: ${{ inputs.xcode }}
+      arg3: ${{ inputs.command }}
+      suffix: ${{ inputs.suffix }}

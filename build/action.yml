@@ -1,4 +1,4 @@
-name: 'swift-package'
+name: 'swift-package-build'
 description: "Set of utils for CI of multiplatform swift packages"
 author: 'capturecontext'
 inputs:
@@ -22,13 +22,10 @@ inputs:
     description: "Suffix for caching key, likely to be files hash"
     required: false
     default: __unspecified__
-  command:
-    description: "MAKE command to run"
+  action:
+    description: "Target action to run"
     required: false
-  subcommand:
-    description: "COMMAND argument for make action"
-    required: false
-    default: __unspecified__
+    default: "xcodebuild"
   workspace:
     description: "Path to xcworkspace for xcodebuild actions"
     required: false
@@ -53,14 +50,6 @@ inputs:
     description: "Where to run the action"
     required: false
     default: '.'
-  swift-format-commit-message:
-    description: "Commit message for swift-format action"
-    required: false
-    default: '[swift-format]'
-  swift-format-branch:
-    description: "Branch for committing result of swift-format action"
-    required: false
-    default: 'main'
 branding:
   icon: 'package'
   color: 'gray-dark'
@@ -68,54 +57,44 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: ./setup-venv
+      uses: ../setup-venv
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: ./xcode-select
+      uses: ../xcode-select
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == visionOS
-      uses: ./install-visionos
+      uses: ../install-visionos
     - name: List available devices
       if: inputs.platform != __unspecified__
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
-      if: | 
-        inputs.cache-derived-data == true ||
-        inputs.command == cache-derived-data
+      if: |
+        inputs.cache-derived-data == true
       uses: ./cache/derived-data
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
         platform: ${{ inputs.platform }}
         xcode: ${{ inputs.xcode }}
-        command: ${{ inputs.subcommand }}
+        command: ${{ inputs.action }}
         suffix: ${{ inputs.suffix }}
     - name: Set IgnoreFileSystemDeviceInodeChanges flag
       shell: bash
       run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
     - name: Update mtime for incremental builds
       uses: chetan/git-restore-mtime-action@v2
-    - name: Run ${{ inputs.command }}
-      if: |
-        inputs.command != __unspecified__ &&
-        inputs.command != cache-derived-data
+    - name: Run ${{ inputs.action }}
       shell: bash
       run: |
         cd "${{ inputs.working-directory }}"
-        make ${{ inputs.command }} \
+        make ${{ inputs.action }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
           ACTION_PATH="$GITHUB_ACTION_PATH" \
           WORKSPACE="${{ inputs.workspace }}" \
-          COMMAND="${{ inputs.subcommand }}" \
+          COMMAND="${{ inputs.action }}" \
           SCHEME="${{ inputs.scheme }}" \
           PLATFORM="${{ inputs.platform }}" \
           CONFIG="${{ inputs.config }}" \
           BEAUTIFY="${{ inputs.beautify }}"
-    - name: Commit swift-format
-      if: inputs.command == swift-format
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: ${{ inputs.swift-format-commit-message }}
-        branch: ${{ inputs.swift-format-branch }}

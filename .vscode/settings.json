@@ -1,0 +1,9 @@
+{
+  "autopep8.args": [
+    "--indent-size=2"
+  ],
+  "cSpell.words": [
+    "runpy",
+    "venv"
+  ],
+}

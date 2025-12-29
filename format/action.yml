@@ -1,0 +1,55 @@
+name: 'swift-package-format'
+description: "Format source code"
+author: 'capturecontext'
+
+branding:
+  icon: 'package'
+  color: 'gray-dark'
+
+inputs:
+  xcode:
+    description: Xcode version
+    required: false
+    default: '26.2'
+  formatter:
+    description: "Formatter"
+    required: false
+    default: swift-format
+  config:
+    description: "Path to custom config"
+    required: false
+    default: __unspecified__
+  commit-message:
+    description: "Commit message for swift-format action"
+    required: false
+    default: [swift-format]
+  branch:
+    description: "Branch for committing result of swift-format action"
+    required: false
+    default: main
+  working-directory:
+    description: "Where to run the action"
+    required: false
+    default: '.'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup venv
+      uses: ../setup-venv
+    - name: Select Xcode ${{ inputs.xcode }}
+      uses: ../xcode-select
+      with:
+        version: ${{ inputs.xcode }}
+    - name: Perform formatting
+      shell: bash
+      run: |
+        cd "${{ inputs.working-directory }}"
+        make format \
+          -f "$GITHUB_ACTION_PATH"/Makefile \
+          CONFIG="${{ inputs.config }}"
+    - name: Commit formatting
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: ${{ inputs.commit-message }}
+        branch: ${{ inputs.branch }}

@@ -1,0 +1,18 @@
+name: 'swift-package-install-visionos'
+description: 'Install visionOS runtime'
+author: 'capturecontext'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+runs:
+  using: 'composite'
+  steps:
+  - name: Install visionOS runtime
+    shell: bash
+    run: |
+      sudo xcodebuild -runFirstLaunch
+      sudo xcrun simctl list
+      sudo xcodebuild -downloadPlatform visionOS
+      sudo xcodebuild -runFirstLaunch

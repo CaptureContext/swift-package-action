@@ -1,0 +1,83 @@
+name: 'swift-package-cache'
+description: 'Proxy for actions/cache for single key with improved specification for swift packages'
+author: 'capturecontext'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+inputs:
+
+  # mark: - passthrough args
+
+  path:
+    description: 'A list of files, directories, and wildcard patterns to cache and restore'
+    required: true
+  upload-chunk-size:
+    description: 'The chunk size used to split up large files during upload, in bytes'
+    required: false
+  enable-cross-os-archive:
+    description: 'An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms'
+    default: 'false'
+    required: false
+  fail-on-cache-miss:
+    description: 'Fail the workflow if cache entry is not found'
+    default: 'false'
+    required: false
+  lookup-only:
+    description: 'Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache'
+    default: 'false'
+    required: false
+
+  # mark: - key-related args
+
+  prefix:
+    description: 'Prefix for caching key'
+    default: cache
+    required: false
+  arg1:
+    description: First argument
+    default: __unspecified__
+    required: false
+  arg2:
+    description: Second argument
+    default: __unspecified__
+    required: false
+  arg3:
+    description: Third argument
+    default: __unspecified__
+    required: false
+  arg4:
+    description: Fourth argument
+    default: __unspecified__
+    required: false
+  arg5:
+    description: Fifth argument
+    default: __unspecified__
+    required: false
+  suffix:
+    description: 'Suffix for caching key, likely to be files hash'
+    default: __unspecified__
+    required: false
+
+outputs:
+  cache-hit:
+    description: 'A boolean value to indicate an exact match was found for the primary key'
+    value: ${{ steps.cache-step.outputs.cache-hit }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Cache ${{ inputs.prefix }}
+      id: cache-step
+      uses: actions/cache@v3
+      with:
+        path: ${{ path }}
+        upload-chunk-size: ${{ upload-chunk-size }}
+        enableCrossOsArchive: ${{ enable-cross-os-archive }}
+        fail-on-cache-miss: ${{ fail-on-cache-miss }}
+        lookup-only: ${{ lookup-only }}
+        key: |
+          ${{ inputs.prefix }}-${{ inputs.arg1 == __unspecified__ && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == __unspecified__ && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == __unspecified__ && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == __unspecified__ && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == __unspecified__ && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == __unspecified__ && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}
+        restore-keys: |
+          ${{ inputs.prefix }}-${{ inputs.arg1 == __unspecified__ && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == __unspecified__ && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == __unspecified__ && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == __unspecified__ && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == __unspecified__ && '' || format('{0}-', inputs.arg5) }}

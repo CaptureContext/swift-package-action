@@ -28,7 +28,10 @@ The `with` portion of the workflow **must** be configured for the action.
 
 _Command for the action, basically it's the name of `MAKE` workflow. For additional details check out [Makefile](Makefile)_
 
-**Type:** `required`
+**Type:** 
+
+- `required`
+- `optional` if you just want to cache derived data
 
 **Supported values:**
 
@@ -39,17 +42,22 @@ _Command for the action, basically it's the name of `MAKE` workflow. For additio
   - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `benchmark`
   - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
+- `cache-derived-data`
+  - _Not a make command. Just a flag for [action.yml](action.yml)_
+  - _See `with.cache-derived-data` for more details_
+  - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `github-build-docs`
   - [_`unchecked`_, _`experimental`_] for @2.0, please submit an issue if you face any
 - `swift-format`
   - [_`unchecked`_] for @2.0, but should work fine
   - _Requires GitHub Secrets to be set up for committing changes_
   - _Uses [swift-format](https://github.com/swiftlang/swift-format)_
-  - _Commits changes to_ `main` _branch, this behavior is not configurable, at least yet_
-  - _Commit message is_ `[swift-format]` _and is not configurable, at least yet_
+  - _Commit message can be specified with `with.swift-format-commit-message`_
+  - _Commit branch can be specified with `with.swift-format-branch`_
 
 > [!NOTE]
 > _Commands with `unchecked` and `experimental` tags is in todo for verification. These flags mean that at some point these commands were used locally, but their use on CI was not validated. Currently we're in the process of migrating our repos to this action, but not every package uses these commands, however any potential issues for those commands should be fixed soon._
+
 </br>
 
 ### ⌘ `with.subcommand`
@@ -76,11 +84,15 @@ _Xcode version_
 
 **Default value:** `16.2`
 
+> [!NOTE]
+>
+> _To skip `Select Xcode` step you can use set value to  `__unspecified__`_
+
 </br>
 
 ### ⌘ `with.cache-derived-data`
 
-_Argument that specifies if action should cache DerivedData_
+_Argument that specifies if action should cache DerivedData, if you only want to cache derived data use `with.command: cache-derived-data`_
 
 **Type:** `optional`
 
@@ -90,6 +102,17 @@ _Argument that specifies if action should cache DerivedData_
 
 - `false`
 - `true`
+
+> [!NOTE]
+>
+> _Cache location is calculated based on_
+>
+> - `with.xcode`
+> - `with.platform`
+> - `with.subcommand`
+> - _hash of the following files_
+>   - `**/Sources/**/*.swift`
+>   - `**/Tests/**/*.swift`  
 
 </br>
 
@@ -137,6 +160,12 @@ _Target platform for the action_
 - `tvOS`
 - `visionOS`
 
+  > [!WARNING]
+  >
+  > _This value will trigger `Install visionOS runtime` step. It will increase CI workflow duration and network usage_
+
+**Default value:** `__unspecified__`
+
 </br>
 
 ### ⌘ `with.config`
@@ -175,6 +204,26 @@ _Relative path to target directory_
 
 </br>
 
+### ⌘ `with.swift-format-commit-message`
+
+_Commit message for swift-format action_
+
+**Type:** `optional`
+
+**Default value:** `[swift-format]`
+
+</br>
+
+### ⌘ `with.swift-format-branch`
+
+_Branch for committing result of swift-format action_
+
+**Type:** `optional`
+
+**Default value:** `main`
+
+</br>
+
 ### 🧩 Step examples:
 
 #### Full:
@@ -182,10 +231,10 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action@2.0
+  uses: capturecontext/swift-package-action@2.1
   with:
     xcode: 16.2
-    workspace: 'Package.xcworkspace' # custom workspace at the root of a repo
+    workspace: Package.xcworkspace # custom workspace at the root of a repo
     cache-derived-data: true
     command: xcodebuild
     subcommand: test
@@ -200,14 +249,24 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action@2.0
+  uses: capturecontext/swift-package-action@2.1
   with:
-    workspace: 'Package.xcworkspace'
+    workspace: Package.xcworkspace
     cache-derived-data: true
     command: xcodebuild
     subcommand: test
     scheme: cool-stuff-package
     platform: iOS
+```
+
+#### Just cache derived data
+
+```yaml
+- name: Cache derived data
+  uses: capturecontext/swift-package-action@2.1
+  with:
+    command: cache-derived-data
+    xcode: 
 ```
 
 
