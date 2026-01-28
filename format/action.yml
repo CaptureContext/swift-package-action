@@ -36,9 +36,9 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: ./setup-venv
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.4
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: ./xcode-select
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.4
       with:
         version: ${{ inputs.xcode }}
     - name: Perform formatting
