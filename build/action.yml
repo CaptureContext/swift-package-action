@@ -66,7 +66,7 @@ runs:
       if: inputs.platform == visionOS
       uses: ./install-visionos
     - name: List available devices
-      if: inputs.platform != __unspecified__
+      if: inputs.platform != '__unspecified__'
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
