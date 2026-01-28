@@ -63,7 +63,7 @@ runs:
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
-      if: inputs.platform == visionOS
+      if: inputs.platform == 'visionOS'
       uses: ./install-visionos
     - name: List available devices
       if: inputs.platform != '__unspecified__'
