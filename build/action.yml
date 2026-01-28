@@ -57,14 +57,14 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: ../setup-venv
+      uses: ./setup-venv
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: ../xcode-select
+      uses: ./xcode-select
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == visionOS
-      uses: ../install-visionos
+      uses: ./install-visionos
     - name: List available devices
       if: inputs.platform != __unspecified__
       shell: bash

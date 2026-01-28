@@ -36,9 +36,9 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: ../setup-venv
+      uses: ./setup-venv
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: ../xcode-select
+      uses: ./xcode-select
       with:
         version: ${{ inputs.xcode }}
     - name: Perform formatting

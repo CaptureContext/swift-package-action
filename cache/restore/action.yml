@@ -69,7 +69,7 @@ runs:
   steps:
     - name: Save ${{ inputs.prefix }}
       id: restore-step
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v5
       with:
         path: ${{ inputs.path }}
         enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
