@@ -20,11 +20,11 @@ inputs:
     required: false
     default: __unspecified__
   commit-message:
-    description: "Commit message for swift-format action"
+    description: "Commit message for the action"
     required: false
-    default: [swift-format]
+    default: "[format]"
   branch:
-    description: "Branch for committing result of swift-format action"
+    description: "Branch for committing result of the action"
     required: false
     default: main
   working-directory:
@@ -47,6 +47,7 @@ runs:
         cd "${{ inputs.working-directory }}"
         make format \
           -f "$GITHUB_ACTION_PATH"/Makefile \
+          FORMATTER="${{ inputs.formatter }}"
           CONFIG="${{ inputs.config }}"
     - name: Commit formatting
       uses: stefanzweifel/git-auto-commit-action@v5

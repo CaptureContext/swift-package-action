@@ -108,7 +108,6 @@ runs:
           -f "$GITHUB_ACTION_PATH"/Makefile \
           ACTION_PATH="$GITHUB_ACTION_PATH" \
           WORKSPACE="${{ inputs.workspace }}" \
-          COMMAND="${{ inputs.subcommand }}" \
           SCHEME="${{ inputs.scheme }}" \
           PLATFORM="${{ inputs.platform }}" \
           CONFIG="${{ inputs.config }}" \

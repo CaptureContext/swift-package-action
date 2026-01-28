@@ -1,21 +1,6 @@
-ifeq ($(MAKECMDGOALS),swift-format)
-	ifeq (FORMATTER_CONFIG, __unspecified__)
-		SWIFT_FORMAT_FLAGS = \
-			--ignore-unparsable-files \
-			--in-place
-	else
-		SWIFT_FORMAT_FLAGS = \
-			--configuration $(FORMATTER_CONFIG) \
-			--ignore-unparsable-files \
-			--in-place
-	endif
-
-	SWIFT_FORMAT_COMMAND = swift format $(SWIFT_FORMAT_FLAGS)
-endif
-
-swift-format:
-	@echo "Running swift-format"
-	@make _runpy FORMATTER=swift-format
+format:
+	@echo "Running ${FORMATTER}"
+	@make _runpy FORMATTER=${FORMATTER} CONFIG=$(CONFIG)
 
 venv:
 	@rm -rf .venv

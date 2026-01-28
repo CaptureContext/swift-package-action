@@ -72,12 +72,12 @@ runs:
       id: cache-step
       uses: actions/cache@v3
       with:
-        path: ${{ path }}
-        upload-chunk-size: ${{ upload-chunk-size }}
-        enableCrossOsArchive: ${{ enable-cross-os-archive }}
-        fail-on-cache-miss: ${{ fail-on-cache-miss }}
-        lookup-only: ${{ lookup-only }}
+        path: ${{ inputs.pathpath }}
+        upload-chunk-size: ${{ inputs.upload-chunk-size }}
+        enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
+        fail-on-cache-miss: ${{ inputs.fail-on-cache-miss }}
+        lookup-only: ${{ inputs.lookup-only }}
         key: |
-          ${{ inputs.prefix }}-${{ inputs.arg1 == __unspecified__ && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == __unspecified__ && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == __unspecified__ && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == __unspecified__ && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == __unspecified__ && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == __unspecified__ && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}
+          ${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == '__unspecified__' && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}
         restore-keys: |
-          ${{ inputs.prefix }}-${{ inputs.arg1 == __unspecified__ && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == __unspecified__ && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == __unspecified__ && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == __unspecified__ && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == __unspecified__ && '' || format('{0}-', inputs.arg5) }}
+          ${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}

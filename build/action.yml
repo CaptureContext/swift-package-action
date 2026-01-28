@@ -1,6 +1,9 @@
 name: 'swift-package-build'
 description: "Set of utils for CI of multiplatform swift packages"
 author: 'capturecontext'
+branding:
+  icon: 'package'
+  color: 'gray-dark'
 inputs:
   xcode:
     description: Xcode version
@@ -50,9 +53,6 @@ inputs:
     description: "Where to run the action"
     required: false
     default: '.'
-branding:
-  icon: 'package'
-  color: 'gray-dark'
 runs:
   using: "composite"
   steps:
@@ -70,8 +70,7 @@ runs:
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
-      if: |
-        inputs.cache-derived-data == true
+      if: inputs.cache-derived-data == true
       uses: ./cache/derived-data
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
