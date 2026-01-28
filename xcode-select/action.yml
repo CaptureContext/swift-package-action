@@ -16,7 +16,7 @@ runs:
   using: 'composite'
   steps:
   - name: Select Xcode ${{ inputs.version }}
-    if: inputs.version != __unspecified__
+    if: inputs.version != '__unspecified__'
     shell: bash
     run: make xcode-select \
       -f "$GITHUB_ACTION_PATH"/Makefile \

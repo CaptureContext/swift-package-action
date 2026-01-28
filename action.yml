@@ -68,23 +68,23 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.4
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.5
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.4
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.5
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == visionOS
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.4
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.5
     - name: List available devices
-      if: inputs.platform != __unspecified__
+      if: inputs.platform != '__unspecified__'
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
       if: | 
         inputs.cache-derived-data == true ||
         inputs.command == cache-derived-data
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.4
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.5
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
@@ -99,8 +99,8 @@ runs:
       uses: chetan/git-restore-mtime-action@v2
     - name: Run ${{ inputs.command }}
       if: |
-        inputs.command != __unspecified__ &&
-        inputs.command != cache-derived-data
+        inputs.command != '__unspecified__' &&
+        inputs.command != 'cache-derived-data'
       shell: bash
       run: |
         cd "${{ inputs.working-directory }}"
