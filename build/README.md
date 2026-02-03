@@ -192,7 +192,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0
+  uses: capturecontext/swift-package-action/build@3.0-beta.7
   with:
     xcode: 26.2
     workspace: Package.xcworkspace # custom workspace at the root of a repo
@@ -209,7 +209,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0
+  uses: capturecontext/swift-package-action/build@3.0-beta.7
   with:
     workspace: Package.xcworkspace
     cache-derived-data: true
@@ -222,7 +222,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Cache derived data
-  uses: capturecontext/swift-package-action/cache/derived-data@3.0
+  uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.7
 ```
 
 ### 📚 Workflow examples [outdated]
