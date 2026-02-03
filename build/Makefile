@@ -14,7 +14,7 @@ warm-simulator:
 		COMMAND=warm-simulator
 
 xcodebuild:
-	@-make warm-simulator -f $(ACTION_PATH)/build/Makefile
+	@-make warm-simulator -f $(ROOT_ACTION_PATH)/build/Makefile
 	@echo "Running xcodebuild)"
 	@echo "  Workspace: $(WORKSPACE)"
 	@echo "  Scheme: $(SCHEME)"
@@ -26,7 +26,7 @@ xcodebuild:
 		COMMAND=xcodebuild
 
 xcodebuild-test:
-	@-make warm-simulator -f $(ACTION_PATH)/build/Makefile
+	@-make warm-simulator -f $(ROOT_ACTION_PATH)/build/Makefile
 	@echo "Running xcodebuild-test"
 	@echo "  Workspace: $(WORKSPACE)"
 	@echo "  Scheme: $(SCHEME)"
@@ -38,7 +38,7 @@ xcodebuild-test:
 		COMMAND=xcodebuild-test
 
 xcodebuild-raw:
-	@-make warm-simulator -f $(ACTION_PATH)/build/Makefile
+	@-make warm-simulator -f $(ROOT_ACTION_PATH)/build/Makefile
 	@echo "Running xcodebuild-raw"
 	@echo "  Workspace: $(WORKSPACE)"
 	@echo "  Scheme: $(SCHEME)"
@@ -51,7 +51,7 @@ xcodebuild-raw:
 		BEAUTIFY=false
 
 xcodebuild-test-raw:
-	@-make warm-simulator -f $(ACTION_PATH)/build/Makefile
+	@-make warm-simulator -f $(ROOT_ACTION_PATH)/build/Makefile
 	@echo "Running xcodebuild-test-raw"
 	@echo "  Workspace: $(WORKSPACE)"
 	@echo "  Scheme: $(SCHEME)"

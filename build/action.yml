@@ -90,7 +90,7 @@ runs:
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.action }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
-          ACTION_PATH="$GITHUB_ACTION_PATH" \
+          ROOT_ACTION_PATH="$GITHUB_ACTION_PATH" \
           WORKSPACE="${{ inputs.workspace }}" \
           COMMAND="${{ inputs.action }}" \
           SCHEME="${{ inputs.scheme }}" \
