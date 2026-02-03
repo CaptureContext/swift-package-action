@@ -21,5 +21,7 @@ runs:
       python-version: '3.13'
   - name: Create .venv
     shell: bash
-    run:
-      cd "${{ inputs.working-directory }}" && pwd && make venv
+    run: |
+      cd "${{ inputs.working-directory }}"
+      make venv \
+        -f "$GITHUB_ACTION_PATH"/Makefile

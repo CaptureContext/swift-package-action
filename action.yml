@@ -54,11 +54,11 @@ inputs:
     required: false
     default: '.'
   swift-format-commit-message:
-    description: "Commit message for swift-format action"
+    description: "Commit message for format action"
     required: false
     default: '[swift-format]'
   swift-format-branch:
-    description: "Branch for committing result of swift-format action"
+    description: "Branch for committing result of format action"
     required: false
     default: 'main'
 branding:
