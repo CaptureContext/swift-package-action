@@ -1,31 +1,31 @@
 print-destination:
-	@make print-destination -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make print-destination -f $(ACTION_PATH)/build/Makefile
 
 warm-simulator:
-	@make warm-simulator -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make warm-simulator -f $(ACTION_PATH)/build/Makefile
 
 xcodebuild:
-	@make xcodebuild -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make xcodebuild -f $(ACTION_PATH)/build/Makefile
 
 xcodebuild-test:
-	@make xcodebuild-test -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make xcodebuild-test -f $(ACTION_PATH)/build/Makefile
 
 # Workaround for debugging Swift Testing tests: https://github.com/cpisciotta/xcbeautify/issues/313
 xcodebuild-raw:
-	@make xcodebuild-raw -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make xcodebuild-raw -f $(ACTION_PATH)/build/Makefile
 
 # Workaround for debugging Swift Testing tests: https://github.com/cpisciotta/xcbeautify/issues/313
 xcodebuild-test-raw:
-	@make xcodebuild-test-raw -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make xcodebuild-test-raw -f $(ACTION_PATH)/build/Makefile
 
 build-for-library-evolution:
-	@make build-for-library-evolution -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make build-for-library-evolution -f $(ACTION_PATH)/build/Makefile
 
 benchmark:
-	@make benchmark -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make benchmark -f $(ACTION_PATH)/build/Makefile
 
 test-docs:
-	@make test-docs -f $(ROOT_ACTION_PATH)/build/Makefile
+	@make test-docs -f $(ACTION_PATH)/build/Makefile
 
 github-build-docs:
 	@echo "Running github-build-docs for $(SCHEME)"

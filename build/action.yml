@@ -57,21 +57,21 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.7
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.8
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.7
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.8
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.7
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.8
     - name: List available devices
       if: inputs.platform != '__unspecified__'
       shell: bash
       run: xcrun simctl list devices available
     - name: Cache derived data
       if: inputs.cache-derived-data == true
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.7
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.8
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
@@ -87,10 +87,11 @@ runs:
     - name: Run ${{ inputs.action }}
       shell: bash
       run: |
+        echo "build GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.action }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \
-          ROOT_ACTION_PATH="$GITHUB_ACTION_PATH" \
+          ACTION_PATH="$GITHUB_ACTION_PATH" \
           WORKSPACE="${{ inputs.workspace }}" \
           COMMAND="${{ inputs.action }}" \
           SCHEME="${{ inputs.scheme }}" \

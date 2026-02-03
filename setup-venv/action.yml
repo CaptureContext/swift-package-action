@@ -22,6 +22,7 @@ runs:
   - name: Create .venv
     shell: bash
     run: |
+      echo "setup-venv GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
       cd "${{ inputs.working-directory }}"
       make venv \
         -f "$GITHUB_ACTION_PATH"/Makefile
