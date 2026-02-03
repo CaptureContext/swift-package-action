@@ -1,5 +1,5 @@
 select-xcode:
-	@xcode-select -s /Applications/Xcode_$(VERSION).app
+	@sudo xcode-select -s /Applications/Xcode_$(VERSION).app
 
 # simple action for testing if Makefile is valid
 ping:
