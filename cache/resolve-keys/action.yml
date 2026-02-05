@@ -57,7 +57,7 @@ runs:
       name: Resolve base cache key
       shell: bash
       run: |
-        echo "value=${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}" >> "$GITHUB_OUTPUT"
+        echo "value=${{ inputs.prefix }}-${{ inputs.arg1 != '__unspecified__' && format('{0}-', inputs.arg1) || '' }}${{ inputs.arg2 != '__unspecified__' && format('{0}-', inputs.arg2) || '' }}${{ inputs.arg3 != '__unspecified__' && format('{0}-', inputs.arg3) || '' }}${{ inputs.arg4 != '__unspecified__' && format('{0}-', inputs.arg4) || '' }}${{ inputs.arg5 != '__unspecified__' && format('{0}-', inputs.arg5) || '' }}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-suffix
       name: Resolve cache key
