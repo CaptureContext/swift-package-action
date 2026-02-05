@@ -71,8 +71,8 @@ runs:
       shell: bash
       run: |
         SUFFIX="${{ inputs.suffix }}"
-        [[ "${{ inputs.suffix }}" == "__unspecified__" ]] ?? \
-          SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
+        [[ "${{ inputs.suffix }}" == "__unspecified__" ]] && \
+          SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}"
         echo "value=${SUFFIX}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-cache-key
