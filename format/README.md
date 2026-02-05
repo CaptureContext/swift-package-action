@@ -97,7 +97,7 @@ _Branch for committing result of the action_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/format@main
+  uses: capturecontext/swift-package-action/format@3.0-beta.13
   with:
     xcode: 26.2
     formatter: swift-format
@@ -111,5 +111,5 @@ _Branch for committing result of the action_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/format@main
+  uses: capturecontext/swift-package-action/format@3.0-beta.13
 ```

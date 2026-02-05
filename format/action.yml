@@ -37,17 +37,17 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@main
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
       with:
         name: "swift-package-format"
 
     - id: setup-venv
       name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@main
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.13
 
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@main
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.13
       with:
         version: ${{ inputs.xcode }}
 
