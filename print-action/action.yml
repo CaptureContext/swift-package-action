@@ -25,3 +25,4 @@ runs:
       run: |
         # ${{ inputs.name }}
         [[ "${{ inputs.path }}" != "__unspecified__" ]] && echo "${{ inputs.path }}"
+        exit 0
