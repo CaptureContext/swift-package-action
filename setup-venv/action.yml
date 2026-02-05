@@ -15,19 +15,25 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - id: install-python
-    name: Install Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: '3.13'
+    - id: print-action-path
+      name: Print GITHUB_ACTION_PATH
+      uses: capturecontext/swift-package-action/print-action-path@main
+      with:
+        name: "swift-package-setup-venv"
+        path: ${{ env.GITHUB_ACTION_PATH }}
 
-  - id: create-venv
-    name: Create .venv
-    shell: bash
-    run: |
-      # create-venv step
+    - id: install-python
+      name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
 
-      echo "setup-venv GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
-      cd "${{ inputs.working-directory }}"
-      make venv \
-        -f "$GITHUB_ACTION_PATH"/Makefile
+    - id: create-venv
+      name: Create .venv
+      shell: bash
+      run: |
+        # create-venv step
+
+        cd "${{ inputs.working-directory }}"
+        make venv \
+          -f "$GITHUB_ACTION_PATH"/Makefile

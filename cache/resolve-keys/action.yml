@@ -1,4 +1,4 @@
-name: 'swift-package-cache-resolve-key'
+name: 'swift-package-cache-resolve-keys'
 description: 'Resolve cache keys for swift packages'
 author: 'capturecontext'
 
@@ -53,6 +53,13 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - id: print-action-path
+      name: Print GITHUB_ACTION_PATH
+      uses: capturecontext/swift-package-action/print-action-path@main
+      with:
+        name: "swift-package-cache-resolve-keys"
+        path: ${{ env.GITHUB_ACTION_PATH }}
+
     - id: resolve-base-key
       name: Resolve base cache key
       shell: bash
@@ -72,6 +79,8 @@ runs:
 
         echo "value=${BASE_KEY}" >> "$GITHUB_OUTPUT"
 
+        echo "resolved-base-key: ${BASE_KEY}"
+
     - id: resolve-suffix
       name: Resolve suffix
       shell: bash
@@ -82,6 +91,8 @@ runs:
         [[ "${{ inputs.suffix }}" == "__unspecified__" ]] && \
           SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}"
         echo "value=${SUFFIX}" >> "$GITHUB_OUTPUT"
+
+        echo "resolved-suffix: ${SUFFIX}"
 
     - id: resolve-cache-key
       name: Resolve cache key
@@ -98,10 +109,15 @@ runs:
 
         echo "value=${RESOLVED_KEY}" >> "$GITHUB_OUTPUT"
 
+        echo "resolved-cache-key: ${RESOLVED_KEY}"
+
     - id: resolve-restore-keys
       name: Resolve restore keys
       shell: bash
       run: |
         # resolve-restore-keys step
 
-        echo "value=${{ steps.resolve-base-key.outputs.value }}" >> "$GITHUB_OUTPUT"
+        RESOLVED_RESTORE_KEYS="${{ steps.resolve-base-key.outputs.value }}"
+        echo "value=${RESOLVED_RESTORE_KEYS}" >> "$GITHUB_OUTPUT"
+
+        echo "resolved-restore-keys: ${RESOLVED_RESTORE_KEYS}"

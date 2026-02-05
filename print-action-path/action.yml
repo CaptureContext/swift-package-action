@@ -1,0 +1,33 @@
+name: 'swift-package-print-action-path'
+description: "Prints action path for visual feedback in composite actions"
+author: 'capturecontext'
+
+branding:
+  icon: 'package'
+  color: 'gray-dark'
+
+inputs:
+  name: 
+    description: "Name of the action"
+    required: false
+    default: "print-action-path step"
+  path:
+    description: "GITHUB_ACTION_PATH to print"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - id: print-self
+      name: Print self
+      shell: bash
+      run: |
+        # swift-package-print-action-path
+        echo "$GITHUB_ACTION_PATH"
+    
+    - id: print-action-path
+      name: Print input path
+      shell: bash
+      run: |
+        # ${{ inputs.name }}
+        echo "${{ inputs.path }}"

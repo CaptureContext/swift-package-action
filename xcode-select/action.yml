@@ -15,14 +15,20 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - id: select-xcode
-    name: Select Xcode ${{ inputs.version }}
-    if: inputs.version != '__unspecified__'
-    shell: bash
-    run: |
-      # select-xcode step
+    - id: print-action-path
+      name: Print GITHUB_ACTION_PATH
+      uses: capturecontext/swift-package-action/print-action-path@main
+      with:
+        name: "swift-package-xcode-select"
+        path: ${{ env.GITHUB_ACTION_PATH }}
 
-      echo "xcode-select GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
-      make select-xcode \
-        -f "$GITHUB_ACTION_PATH"/Makefile \
-        VERSION=${{ inputs.version }} 
+    - id: select-xcode
+      name: Select Xcode ${{ inputs.version }}
+      if: inputs.version != '__unspecified__'
+      shell: bash
+      run: |
+        # select-xcode step
+
+        make select-xcode \
+          -f "$GITHUB_ACTION_PATH"/Makefile \
+          VERSION=${{ inputs.version }} 

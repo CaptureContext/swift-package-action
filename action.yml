@@ -103,7 +103,10 @@ runs:
         inputs.command != 'cache-derived-data'
       shell: bash
       run: |
-        echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
+        # run-${{ inputs.command }} step
+
+        echo "$GITHUB_ACTION_PATH"
+
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.command }} \
           -f "$GITHUB_ACTION_PATH"/Makefile \

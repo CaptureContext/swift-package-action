@@ -80,6 +80,13 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - id: print-action-path
+      name: Print GITHUB_ACTION_PATH
+      uses: capturecontext/swift-package-action/print-action-path@main
+      with:
+        name: "swift-package-cache"
+        path: ${{ env.GITHUB_ACTION_PATH }}
+
     - id: resolve-cache-keys
       name: Resolve cache keys
       uses: capturecontext/swift-package-action/cache/resolve-keys@main

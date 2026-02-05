@@ -15,7 +15,7 @@ warm-simulator:
 
 xcodebuild:
 	@-make warm-simulator -f $(ACTION_PATH)/Makefile
-	@echo "Running xcodebuild)"
+	@echo "Running xcodebuild"
 	@echo "  Workspace: $(WORKSPACE)"
 	@echo "  Scheme: $(SCHEME)"
 	@echo "  Config: $(CONFIG)"

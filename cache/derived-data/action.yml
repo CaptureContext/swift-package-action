@@ -55,14 +55,21 @@ outputs:
 runs:
   using: 'composite'
   steps:
-  - id: cache-derived-data
-    name: Cache DerivedData
-    uses: capturecontext/swift-package-action/cache@main
-    with:
-      path: ${{ inputs.path }}
-      prefix: ${{ inputs.prefix }}
-      arg1: ${{ inputs.platform }}
-      arg2: xcode
-      arg3: ${{ inputs.xcode }}
-      arg4: ${{ inputs.command }}
-      suffix: ${{ inputs.suffix }}
+    - id: print-action-path
+      name: Print GITHUB_ACTION_PATH
+      uses: capturecontext/swift-package-action/print-action-path@main
+      with:
+        name: "swift-package-cache-derived-data"
+        path: ${{ env.GITHUB_ACTION_PATH }}
+
+    - id: cache-derived-data
+      name: Cache DerivedData
+      uses: capturecontext/swift-package-action/cache@main
+      with:
+        path: ${{ inputs.path }}
+        prefix: ${{ inputs.prefix }}
+        arg1: ${{ inputs.platform }}
+        arg2: xcode
+        arg3: ${{ inputs.xcode }}
+        arg4: ${{ inputs.command }}
+        suffix: ${{ inputs.suffix }}
