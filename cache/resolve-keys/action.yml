@@ -86,9 +86,6 @@ runs:
       run: |
         # resolve-suffix step
 
-        pwd
-        ls
-
         SUFFIX="${{ inputs.suffix }}"
         [[ "${{ inputs.suffix }}" == "__unspecified__" ]] && \
           SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}"

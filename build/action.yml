@@ -87,7 +87,7 @@ runs:
         platform: ${{ inputs.platform }}
         xcode: ${{ inputs.xcode }}
         command: ${{ inputs.action }}
-        suffix: ${{ inputs.suffix }}
+        suffix: ${{ inputs.cache-derived-data-suffix }}
 
     - id: set-ignore-fs-device-inode-changes
       name: Set IgnoreFileSystemDeviceInodeChanges flag
