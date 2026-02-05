@@ -40,7 +40,7 @@ runs:
       uses: capturecontext/swift-package-action/print-action-path@main
       with:
         name: "swift-package-format"
-        path: ${{ env.GITHUB_ACTION_PATH }}
+        path: ${{ github.action_path }}
 
     - id: setup-venv
       name: Setup venv

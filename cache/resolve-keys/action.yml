@@ -58,7 +58,7 @@ runs:
       uses: capturecontext/swift-package-action/print-action-path@main
       with:
         name: "swift-package-cache-resolve-keys"
-        path: ${{ env.GITHUB_ACTION_PATH }}
+        path: ${{ github.action_path }}
 
     - id: resolve-base-key
       name: Resolve base cache key

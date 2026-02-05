@@ -61,7 +61,7 @@ runs:
       uses: capturecontext/swift-package-action/print-action-path@main
       with:
         name: "swift-package-build"
-        path: ${{ env.GITHUB_ACTION_PATH }}
+        path: ${{ github.action_path }}
 
     - id: setup-venv
       name: Setup venv
@@ -107,8 +107,8 @@ runs:
 
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.action }} \
-          -f "$GITHUB_ACTION_PATH"/Makefile \
-          ACTION_PATH="$GITHUB_ACTION_PATH" \
+          -f "${{ github.action_path }}"/Makefile \
+          ACTION_PATH="${{ github.action_path }}" \
           WORKSPACE="${{ inputs.workspace }}" \
           COMMAND="${{ inputs.action }}" \
           SCHEME="${{ inputs.scheme }}" \
