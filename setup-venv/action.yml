@@ -15,11 +15,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - name: Install Python
+  - id: install-python
+    name: Install Python
     uses: actions/setup-python@v5
     with:
       python-version: '3.13'
-  - name: Create .venv
+  - id: create-venv
+    name: Create .venv
     shell: bash
     run: |
       echo "setup-venv GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"

@@ -9,7 +9,8 @@ branding:
 runs:
   using: 'composite'
   steps:
-  - name: Install visionOS runtime
+  - id: install-visionos
+    name: Install visionOS runtime
     shell: bash
     run: |
       sudo xcodebuild -runFirstLaunch

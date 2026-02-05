@@ -15,7 +15,8 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - name: Select Xcode ${{ inputs.version }}
+  - id: select-xcode
+    name: Select Xcode ${{ inputs.version }}
     if: inputs.version != '__unspecified__'
     shell: bash
     run: |

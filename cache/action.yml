@@ -82,7 +82,7 @@ runs:
   steps:
     - id: resolve-cache-keys
       name: Resolve cache keys
-      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.9
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.10
       with:
         prefix: ${{ inputs.prefix }}
         arg1: ${{ inputs.arg1 }}

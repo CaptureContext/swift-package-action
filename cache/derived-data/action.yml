@@ -57,7 +57,7 @@ runs:
   steps:
   - id: cache-derived-data
     name: Cache DerivedData
-    uses: capturecontext/swift-package-action/cache@3.0-beta.9
+    uses: capturecontext/swift-package-action/cache@3.0-beta.10
     with:
       path: ${{ inputs.path }}
       prefix: ${{ inputs.prefix }}

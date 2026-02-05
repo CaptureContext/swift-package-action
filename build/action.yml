@@ -56,35 +56,43 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.9
-    - name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.9
+    - id: setup-venv
+      name: Setup venv
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.10
+    - id: select-xcode
+      name: Select Xcode ${{ inputs.xcode }}
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.10
       with:
         version: ${{ inputs.xcode }}
-    - name: Install visionOS runtime
+    - id: install-visionos
+      name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.9
-    - name: List available devices
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.10
+    - id: list-devices
+      name: List available devices
       if: inputs.platform != '__unspecified__'
       shell: bash
       run: xcrun simctl list devices available
-    - name: Cache derived data
+    - id: cache-derived-data
+      name: Cache derived data
       if: inputs.cache-derived-data == 'true'
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.9
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.10
       with:
-        path: ${{ inputs.cache-derived-data-base-path }}
+        path: ${{ inputs.cache-derived-data-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
         platform: ${{ inputs.platform }}
         xcode: ${{ inputs.xcode }}
         command: ${{ inputs.action }}
         suffix: ${{ inputs.suffix }}
-    - name: Set IgnoreFileSystemDeviceInodeChanges flag
+    - id: set-ignore-fs-device-inode-changes
+      name: Set IgnoreFileSystemDeviceInodeChanges flag
       shell: bash
       run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
-    - name: Update mtime for incremental builds
+    - id: git-restore-mtime
+      name: Update mtime for incremental builds
       uses: chetan/git-restore-mtime-action@v2
-    - name: Run ${{ inputs.action }}
+    - id: run-action
+      name: Run ${{ inputs.action }}
       shell: bash
       run: |
         echo "build GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
