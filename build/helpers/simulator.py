@@ -3,7 +3,12 @@ import json
 
 def warm(destination):
   platform_id = destination.split("id=")[-1]
+  
   if platform_id:
+    if platform_id.startswith("macOS"):
+      print("Couldn't warm simulator. Reason: macOS simulators are not supported.")
+      return
+
     boot = ["xcrun", "simctl", "boot", platform_id]
     subprocess.run(boot, check=True)
 
