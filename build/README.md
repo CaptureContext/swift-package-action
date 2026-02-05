@@ -85,15 +85,15 @@ _Argument that specifies if action should cache DerivedData, if you only want to
 > - `with.xcode`
 > - `with.platform`
 > - `with.subcommand`
-> - _hash of the following files_
+> - _hash of the following files if ⌘ `with.cache-derived-data-suffix` is not provided_
 >   - `**/Sources/**/*.swift`
 >   - `**/Tests/**/*.swift`
 >
 > You can also specify:
 >
-> - ⌘ `cache-derived-data-base-path` which is `~/.derivedData` by default
-> - ⌘ `cache-derived-data-prefix` which is `__unspecified__` aka `" "` by default
-> - ⌘ `cache-derived-data-suffix` which is `__unspecified__` aka `" "` by default
+> - ⌘ `with.cache-derived-data-path` which is `~/.derivedData` by default
+> - ⌘ `with.cache-derived-data-prefix` which is `__unspecified__` aka `""` by default
+> - ⌘ `with.cache-derived-data-suffix` which is `__unspecified__` aka `""` by default
 
 </br>
 
@@ -192,7 +192,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0-beta.8
+  uses: capturecontext/swift-package-action/build@3.0-beta.9
   with:
     xcode: 26.2
     workspace: Package.xcworkspace # custom workspace at the root of a repo
@@ -209,7 +209,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0-beta.8
+  uses: capturecontext/swift-package-action/build@3.0-beta.9
   with:
     workspace: Package.xcworkspace
     cache-derived-data: true
@@ -222,7 +222,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Cache derived data
-  uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.8
+  uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.9
 ```
 
 ### 📚 Workflow examples [outdated]

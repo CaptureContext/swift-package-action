@@ -1,0 +1,78 @@
+name: 'swift-package-cache-resolve-key'
+description: 'Resolve cache keys for swift packages'
+author: 'capturecontext'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+inputs:
+  prefix:
+    description: 'Prefix for caching key'
+    default: cache
+    required: false
+  arg1:
+    description: First argument
+    default: __unspecified__
+    required: false
+  arg2:
+    description: Second argument
+    default: __unspecified__
+    required: false
+  arg3:
+    description: Third argument
+    default: __unspecified__
+    required: false
+  arg4:
+    description: Fourth argument
+    default: __unspecified__
+    required: false
+  arg5:
+    description: Fifth argument
+    default: __unspecified__
+    required: false
+  suffix:
+    description: 'Suffix for caching key, likely to be files hash'
+    default: __unspecified__
+    required: false
+
+outputs:
+  resolved-base-key:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-base-key.outputs.value }}
+  resolved-suffix:
+    description: 'Resolved suffix'
+    value: ${{ steps.resolve-suffix.outputs.value }}
+  resolved-key:
+    description: 'Resolved base key followed by resolved suffix'
+    value: ${{ steps.resolve-cache-key.outputs.value }}
+  resolved-restore-keys:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-restore-keys.outputs.value }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: resolve-base-key
+      name: Resolve base cache key
+      shell: bash
+      run: |
+        echo "value=${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}" >> "$GITHUB_OUTPUT"
+
+    - id: resolve-suffix
+      name: Resolve cache key
+      shell: bash
+      run: |
+        echo "value=${{ inputs.suffix == '__unspecified__' && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}" >> "$GITHUB_OUTPUT"
+
+    - id: resolve-cache-key
+      name: Resolve cache key
+      shell: bash
+      run: |
+        echo "value=${{ steps.resolve-base-key.outputs.value }}${{ steps.resolve-suffix.outputs.value }}" >> "$GITHUB_OUTPUT"
+
+    - id: resolve-restore-keys
+      name: Resolve restore keys
+      shell: bash
+      run: |
+        echo "value=${{ steps.resolve-base-key.outputs.value }}" >> "$GITHUB_OUTPUT"

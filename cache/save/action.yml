@@ -47,15 +47,44 @@ inputs:
     description: Fifth argument
     default: __unspecified__
     required: false
+  suffix:
+    description: 'Suffix for caching key, likely to be files hash'
+    default: __unspecified__
+    required: false
+
+outputs:
+  resolved-base-key:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-base-key }}
+  resolved-suffix:
+    description: 'Resolved suffix'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-suffix }}
+  resolved-key:
+    description: 'Resolved base key followed by resolved suffix'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-key }}
+  resolved-restore-keys:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-restore-keys }}
 
 runs:
   using: 'composite'
   steps:
+    - id: resolve-cache-keys
+      name: Resolve cache keys
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.9
+      with:
+        prefix: ${{ inputs.prefix }}
+        arg1: ${{ inputs.arg1 }}
+        arg2: ${{ inputs.arg2 }}
+        arg3: ${{ inputs.arg3 }}
+        arg4: ${{ inputs.arg4 }}
+        arg5: ${{ inputs.arg5 }}
+        suffix: ${{ inputs.suffix }}
+
     - name: Save ${{ inputs.prefix }}
       uses: actions/cache/save@v5
       with:
         path: ${{ inputs.path }}
         upload-chunk-size: ${{ inputs.upload-chunk-size }}
         enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
-        key: |
-          ${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == '__unspecified__' && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}
+        key: ${{ steps.resolve-cache-keys.outputs.resolved-key }}

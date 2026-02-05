@@ -61,6 +61,18 @@ inputs:
     required: false
 
 outputs:
+  resolved-base-key:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-base-key }}
+  resolved-suffix:
+    description: 'Resolved suffix'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-suffix }}
+  resolved-key:
+    description: 'Resolved base key followed by resolved suffix'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-key }}
+  resolved-restore-keys:
+    description: 'Resolved base key'
+    value: ${{ steps.resolve-cache-keys.outputs.resolved-restore-keys }}
   cache-hit:
     description: 'A boolean value to indicate an exact match was found for the primary key'
     value: ${{ steps.cache-step.outputs.cache-hit }}
@@ -68,8 +80,20 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Cache ${{ inputs.prefix }}
-      id: cache-step
+    - id: resolve-cache-keys
+      name: Resolve cache keys
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.9
+      with:
+        prefix: ${{ inputs.prefix }}
+        arg1: ${{ inputs.arg1 }}
+        arg2: ${{ inputs.arg2 }}
+        arg3: ${{ inputs.arg3 }}
+        arg4: ${{ inputs.arg4 }}
+        arg5: ${{ inputs.arg5 }}
+        suffix: ${{ inputs.suffix }}
+
+    - id: cache
+      name: Cache ${{ inputs.prefix }}
       uses: actions/cache@v5
       with:
         path: ${{ inputs.path }}
@@ -77,7 +101,5 @@ runs:
         enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}
         fail-on-cache-miss: ${{ inputs.fail-on-cache-miss }}
         lookup-only: ${{ inputs.lookup-only }}
-        key: |
-          ${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}${{ inputs.suffix == '__unspecified__' && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}
-        restore-keys: |
-          ${{ inputs.prefix }}-${{ inputs.arg1 == '__unspecified__' && '' || format('{0}-', inputs.arg1) }}${{ inputs.arg2 == '__unspecified__' && '' || format('{0}-', inputs.arg2) }}${{ inputs.arg3 == '__unspecified__' && '' || format('{0}-', inputs.arg3) }}${{ inputs.arg4 == '__unspecified__' && '' || format('{0}-', inputs.arg4) }}${{ inputs.arg5 == '__unspecified__' && '' || format('{0}-', inputs.arg5) }}
+        key: ${{ steps.resolve-cache-keys.outputs.resolved-key }}
+        restore-keys: ${{ steps.resolve-cache-keys.outputs.resolved-restore-keys }}
