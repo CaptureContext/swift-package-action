@@ -57,6 +57,8 @@ runs:
       name: Resolve base cache key
       shell: bash
       run: |
+        # resolve-base-key step
+
         BASE_KEY=""
         [[ "${{ inputs.prefix }}" != "__unspecified__" ]] && BASE_KEY="${{ inputs.prefix }}"
         [[ "${{ inputs.arg1 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg1 }}"
@@ -71,9 +73,11 @@ runs:
         echo "value=${BASE_KEY}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-suffix
-      name: Resolve cache key
+      name: Resolve suffix
       shell: bash
       run: |
+        # resolve-suffix step
+
         SUFFIX="${{ inputs.suffix }}"
         [[ "${{ inputs.suffix }}" == "__unspecified__" ]] && \
           SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}"
@@ -83,6 +87,8 @@ runs:
       name: Resolve cache key
       shell: bash
       run: |
+        # resolve-cache-key step
+
         BASE_KEY="${{ steps.resolve-base-key.outputs.value }}"
         SUFFIX="${{ steps.resolve-suffix.outputs.value }}"
         RESOLVED_KEY="${BASE_KEY}-${SUFFIX}"
@@ -96,4 +102,6 @@ runs:
       name: Resolve restore keys
       shell: bash
       run: |
+        # resolve-restore-keys step
+
         echo "value=${{ steps.resolve-base-key.outputs.value }}" >> "$GITHUB_OUTPUT"

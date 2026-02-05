@@ -38,21 +38,26 @@ runs:
     - id: setup-venv
       name: Setup venv
       uses: capturecontext/swift-package-action/setup-venv@main
+      
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
       uses: capturecontext/swift-package-action/xcode-select@main
       with:
         version: ${{ inputs.xcode }}
+
     - id: perform-formatting
       name: Perform formatting
       shell: bash
       run: |
+        # perform-formatting step
+
         echo "format GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
         cd "${{ inputs.working-directory }}"
         make format \
           -f "$GITHUB_ACTION_PATH"/Makefile \
           FORMATTER="${{ inputs.formatter }}"
           CONFIG="${{ inputs.config }}"
+
     - id: commit-formatting
       name: Commit formatting
       uses: stefanzweifel/git-auto-commit-action@v5

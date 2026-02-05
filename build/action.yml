@@ -59,20 +59,24 @@ runs:
     - id: setup-venv
       name: Setup venv
       uses: capturecontext/swift-package-action/setup-venv@main
+
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
       uses: capturecontext/swift-package-action/xcode-select@main
       with:
         version: ${{ inputs.xcode }}
+
     - id: install-visionos
       name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
       uses: capturecontext/swift-package-action/install-visionos@main
+
     - id: list-devices
       name: List available devices
       if: inputs.platform != '__unspecified__'
       shell: bash
       run: xcrun simctl list devices available
+
     - id: cache-derived-data
       name: Cache derived data
       if: inputs.cache-derived-data == 'true'
@@ -84,17 +88,22 @@ runs:
         xcode: ${{ inputs.xcode }}
         command: ${{ inputs.action }}
         suffix: ${{ inputs.suffix }}
+
     - id: set-ignore-fs-device-inode-changes
       name: Set IgnoreFileSystemDeviceInodeChanges flag
       shell: bash
       run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
+
     - id: git-restore-mtime
       name: Update mtime for incremental builds
       uses: chetan/git-restore-mtime-action@v2
+
     - id: run-action
       name: Run ${{ inputs.action }}
       shell: bash
       run: |
+        # run-action step
+
         echo "build GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
         cd "${{ inputs.working-directory }}"
         make ${{ inputs.action }} \

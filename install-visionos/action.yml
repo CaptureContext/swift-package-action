@@ -13,6 +13,8 @@ runs:
     name: Install visionOS runtime
     shell: bash
     run: |
+      # install-visionos step
+
       sudo xcodebuild -runFirstLaunch
       sudo xcrun simctl list
       sudo xcodebuild -downloadPlatform visionOS

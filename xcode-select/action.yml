@@ -20,6 +20,8 @@ runs:
     if: inputs.version != '__unspecified__'
     shell: bash
     run: |
+      # select-xcode step
+
       echo "xcode-select GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
       make select-xcode \
         -f "$GITHUB_ACTION_PATH"/Makefile \

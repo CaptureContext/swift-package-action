@@ -20,10 +20,13 @@ runs:
     uses: actions/setup-python@v5
     with:
       python-version: '3.13'
+
   - id: create-venv
     name: Create .venv
     shell: bash
     run: |
+      # create-venv step
+
       echo "setup-venv GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
       cd "${{ inputs.working-directory }}"
       make venv \
