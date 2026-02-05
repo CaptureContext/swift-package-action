@@ -192,7 +192,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0-beta.9
+  uses: capturecontext/swift-package-action/build@3.0-beta.10
   with:
     xcode: 26.2
     workspace: Package.xcworkspace # custom workspace at the root of a repo
@@ -209,7 +209,7 @@ _Relative path to target directory_
 
 ```yaml
 - name: Test CoolStuff
-  uses: capturecontext/swift-package-action/build@3.0-beta.9
+  uses: capturecontext/swift-package-action/build@3.0-beta.10
   with:
     workspace: Package.xcworkspace
     cache-derived-data: true
@@ -222,12 +222,26 @@ _Relative path to target directory_
 
 ```yaml
 - name: Cache derived data
-  uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.9
+  uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.10
 ```
 
-### 📚 Workflow examples [outdated]
+### 📚 Workflow examples
 
-- [**`swift-existential-container`**](https://github.com/capturecontext/swift-existential-container/blob/main/.github/workflows/ci.yml)
+- [`capturecontext/cocoa-aliases`](https://github/capturecontext/cocoa-aliases)
+- [`capturecontext/swift-equated`](https://github/capturecontext/swift-equated)
+- [`capturecontext/swift-hashed`](https://github/capturecontext/swift-hashed)
+- [`capturecontext/swift-marker-protocols`](https://github/capturecontext/swift-marker-protocols)
+- [`capturecontext/swift-keypaths-extensions`](https://github/capturecontext/swift-keypaths-extensions)
+- [`capturecontext/swift-interception`](https://github/capturecontext/swift-interception)
+- [`capturecontext/combine-interception`](https://github/capturecontext/combine-interception)
+- [`capturecontext/combine-cocoa`](https://github/capturecontext/combine-cocoa)
+- [`capturecontext/swift-declarative-configuration`](https://github/capturecontext/swift-declarative-configuration)
+- [`capturecontext/swift-associated-objects`](https://github/capturecontext/swift-associated-objects)
+- [`capturecontext/swift-foundation-extensions`](https://github/capturecontext/swift-foundation-extensions)
+
+#### Outdated
+
+- [`swift-existential-container`](https://github.com/capturecontext/swift-existential-container/blob/main/.github/workflows/ci.yml)
 - `swift-composable-architecture`
   - **_[Original](https://github.com/pointfreeco/swift-composable-architecture/blob/main/.github/workflows/ci.yml)_**
   - **_[SwiftPackageAction](https://github.com/capturecontext/swift-composable-architecture-ci-explorations/blob/main/.github/workflows/ci.yml)_**

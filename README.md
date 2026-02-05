@@ -16,16 +16,33 @@
 
 ## Getting started 🚀
 
+#### Nested actions:
 
-See nested actions:
 - [**build**](./build/README.md)
 - [**format**](./format/README.md)
 - [**cache**](./cache/README.md)
 
+> [!IMPORTANT]
+>
+> _Root action is able to run some actions, but the API wasn't updated and results are not tested, consider using nested actions. Documentation is deleted, currently we're deciding if we should keep such an umbrella action for public `v3` release or to remove it_
 
-### 📚 Workflow examples [outdated]
+### 📚 Workflow examples
 
-- [**`swift-existential-container`**](https://github.com/capturecontext/swift-existential-container/blob/main/.github/workflows/ci.yml)
+- [`capturecontext/cocoa-aliases`](https://github/capturecontext/cocoa-aliases)
+- [`capturecontext/swift-equated`](https://github/capturecontext/swift-equated)
+- [`capturecontext/swift-hashed`](https://github/capturecontext/swift-hashed)
+- [`capturecontext/swift-marker-protocols`](https://github/capturecontext/swift-marker-protocols)
+- [`capturecontext/swift-keypaths-extensions`](https://github/capturecontext/swift-keypaths-extensions)
+- [`capturecontext/swift-interception`](https://github/capturecontext/swift-interception)
+- [`capturecontext/combine-interception`](https://github/capturecontext/combine-interception)
+- [`capturecontext/combine-cocoa`](https://github/capturecontext/combine-cocoa)
+- [`capturecontext/swift-declarative-configuration`](https://github/capturecontext/swift-declarative-configuration)
+- [`capturecontext/swift-associated-objects`](https://github/capturecontext/swift-associated-objects)
+- [`capturecontext/swift-foundation-extensions`](https://github/capturecontext/swift-foundation-extensions)
+
+#### Outdated:
+
+- [`swift-existential-container`](https://github.com/capturecontext/swift-existential-container/blob/main/.github/workflows/ci.yml)
 - `swift-composable-architecture`
   - **_[Original](https://github.com/pointfreeco/swift-composable-architecture/blob/main/.github/workflows/ci.yml)_**
   - **_[SwiftPackageAction](https://github.com/capturecontext/swift-composable-architecture-ci-explorations/blob/main/.github/workflows/ci.yml)_**
