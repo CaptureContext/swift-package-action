@@ -58,10 +58,9 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action-path@main
+      uses: capturecontext/swift-package-action/print-action@main
       with:
         name: "swift-package-build"
-        path: ${{ github.action_path }}
 
     - id: setup-venv
       name: Setup venv

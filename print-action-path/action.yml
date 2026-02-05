@@ -1,4 +1,4 @@
-name: 'swift-package-print-action-path'
+name: 'swift-package-print-action'
 description: "Prints action path for visual feedback in composite actions"
 author: 'capturecontext'
 
@@ -10,17 +10,18 @@ inputs:
   name: 
     description: "Name of the action"
     required: false
-    default: "print-action-path step"
+    default: "print-action step"
   path:
     description: "github.action_path to print"
-    required: true
+    required: false
+    default: __unspecified__
 
 runs:
   using: "composite"
   steps:
-    - id: print-action-path
-      name: Print input path
+    - id: print-action
+      name: Print action
       shell: bash
       run: |
         # ${{ inputs.name }}
-        echo "${{ inputs.path }}"
+        [[ "${{ inputs.path }}" != "__unspecified__" ]] && echo "${{ inputs.path }}"

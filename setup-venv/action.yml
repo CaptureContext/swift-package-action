@@ -17,10 +17,9 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action-path@main
+      uses: capturecontext/swift-package-action/print-action@main
       with:
         name: "swift-package-setup-venv"
-        path: ${{ github.action_path }}
 
     - id: install-python
       name: Install Python

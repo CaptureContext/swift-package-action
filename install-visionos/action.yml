@@ -11,10 +11,9 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action-path@main
+      uses: capturecontext/swift-package-action/print-action@main
       with:
         name: "swift-package-install-visionos"
-        path: ${{ github.action_path }}
 
     - id: install-visionos
       name: Install visionOS runtime
