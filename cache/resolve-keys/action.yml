@@ -64,6 +64,10 @@ runs:
         [[ "${{ inputs.arg3 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg3 }}"
         [[ "${{ inputs.arg4 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg4 }}"
         [[ "${{ inputs.arg5 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg5 }}"
+
+        # remove leading '-' if prefix is unspecified, but some args are present
+        BASE_KEY="${BASE_KEY#-}"
+
         echo "value=${BASE_KEY}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-suffix
@@ -79,7 +83,14 @@ runs:
       name: Resolve cache key
       shell: bash
       run: |
-        echo "value=${{ steps.resolve-base-key.outputs.value }}-${{ steps.resolve-suffix.outputs.value }}" >> "$GITHUB_OUTPUT"
+        BASE_KEY="${{ steps.resolve-base-key.outputs.value }}"
+        SUFFIX="${{ steps.resolve-suffix.outputs.value }}"
+        RESOLVED_KEY="${BASE_KEY}-${SUFFIX}"
+
+        # remove leading '-' if base key is empty
+        RESOLVED_KEY="${RESOLVED_KEY#-}" 
+
+        echo "value=${RESOLVED_KEY}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-restore-keys
       name: Resolve restore keys
