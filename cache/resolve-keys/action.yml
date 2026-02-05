@@ -57,19 +57,29 @@ runs:
       name: Resolve base cache key
       shell: bash
       run: |
-        echo "value=${{ inputs.prefix }}-${{ inputs.arg1 != '__unspecified__' && format('{0}-', inputs.arg1) || '' }}${{ inputs.arg2 != '__unspecified__' && format('{0}-', inputs.arg2) || '' }}${{ inputs.arg3 != '__unspecified__' && format('{0}-', inputs.arg3) || '' }}${{ inputs.arg4 != '__unspecified__' && format('{0}-', inputs.arg4) || '' }}${{ inputs.arg5 != '__unspecified__' && format('{0}-', inputs.arg5) || '' }}" >> "$GITHUB_OUTPUT"
+        BASE_KEY=""
+        [[ "${{ inputs.prefix }}" != "__unspecified__" ]] && BASE_KEY="${{ inputs.prefix }}"
+        [[ "${{ inputs.arg1 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg1 }}"
+        [[ "${{ inputs.arg2 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg2 }}"
+        [[ "${{ inputs.arg3 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg3 }}"
+        [[ "${{ inputs.arg4 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg4 }}"
+        [[ "${{ inputs.arg5 }}" != "__unspecified__" ]] && BASE_KEY="${BASE_KEY}-${{ inputs.arg5 }}"
+        echo "value=${BASE_KEY}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-suffix
       name: Resolve cache key
       shell: bash
       run: |
-        echo "value=${{ inputs.suffix == '__unspecified__' && hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') || inputs.suffix }}" >> "$GITHUB_OUTPUT"
+        SUFFIX="${{ inputs.suffix }}"
+        [[ "${{ inputs.suffix }}" == "__unspecified__" ]] ?? \
+          SUFFIX="${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
+        echo "value=${SUFFIX}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-cache-key
       name: Resolve cache key
       shell: bash
       run: |
-        echo "value=${{ steps.resolve-base-key.outputs.value }}${{ steps.resolve-suffix.outputs.value }}" >> "$GITHUB_OUTPUT"
+        echo "value=${{ steps.resolve-base-key.outputs.value }}-${{ steps.resolve-suffix.outputs.value }}" >> "$GITHUB_OUTPUT"
 
     - id: resolve-restore-keys
       name: Resolve restore keys

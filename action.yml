@@ -68,14 +68,14 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.11
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.12
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.11
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.12
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == visionOS
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.11
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.12
     - name: List available devices
       if: inputs.platform != '__unspecified__'
       shell: bash
@@ -84,7 +84,7 @@ runs:
       if: | 
         inputs.cache-derived-data == true ||
         inputs.command == cache-derived-data
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.11
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.12
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
