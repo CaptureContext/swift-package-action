@@ -58,16 +58,16 @@ runs:
   steps:
     - id: setup-venv
       name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.10
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.11
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.10
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.11
       with:
         version: ${{ inputs.xcode }}
     - id: install-visionos
       name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.10
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.11
     - id: list-devices
       name: List available devices
       if: inputs.platform != '__unspecified__'
@@ -76,7 +76,7 @@ runs:
     - id: cache-derived-data
       name: Cache derived data
       if: inputs.cache-derived-data == 'true'
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.10
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.11
       with:
         path: ${{ inputs.cache-derived-data-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
