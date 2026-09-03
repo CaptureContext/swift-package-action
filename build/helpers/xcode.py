@@ -25,23 +25,25 @@ def build(
     )
   else:
     run_xcodebuild_command(
-      args=flags,
+      args=["build"] + flags,
       beautify=beautify
     )
 
 def test_docs(scheme, destination):
-  doc_warnings = subprocess.run(
+  result = subprocess.run(
     ["xcodebuild", "clean", "docbuild"] + [
       "-scheme", scheme,
       "-destination", f"platform={destination}",
       "-quiet"
     ],
     capture_output=True,
+    check=True,
     text=True
-  ).stdout
+  )
+  doc_output = result.stdout + result.stderr
 
-  if "couldn't be resolved to known documentation" in doc_warnings:
-    print(f"xcodebuild docbuild failed:\n\n{doc_warnings}")
+  if "couldn't be resolved to known documentation" in doc_output:
+    print(f"xcodebuild docbuild failed:\n\n{doc_output}")
     exit(1)
 
 def run_xcodebuild_command(args, beautify):

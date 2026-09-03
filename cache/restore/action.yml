@@ -85,13 +85,13 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-cache-restore"
 
     - id: resolve-cache-keys
       name: Resolve cache keys
-      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.13
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.14
       with:
         prefix: ${{ inputs.prefix }}
         arg1: ${{ inputs.arg1 }}
@@ -101,9 +101,9 @@ runs:
         arg5: ${{ inputs.arg5 }}
         suffix: ${{ inputs.suffix }}
 
-    - name: Save ${{ inputs.prefix }}
+    - name: Restore ${{ inputs.prefix }}
       id: restore-step
-      uses: actions/cache/restore@v5
+      uses: actions/cache/restore@v6
       with:
         path: ${{ inputs.path }}
         enableCrossOsArchive: ${{ inputs.enable-cross-os-archive }}

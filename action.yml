@@ -68,14 +68,14 @@ runs:
   using: "composite"
   steps:
     - name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.13
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.14
     - name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.13
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.14
       with:
         version: ${{ inputs.xcode }}
     - name: Install visionOS runtime
       if: inputs.platform == visionOS
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.13
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.14
     - name: List available devices
       if: inputs.platform != '__unspecified__'
       shell: bash
@@ -84,14 +84,14 @@ runs:
       if: | 
         inputs.cache-derived-data == true ||
         inputs.command == cache-derived-data
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.13
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.14
       with:
         path: ${{ inputs.cache-derived-data-base-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}
         platform: ${{ inputs.platform }}
         xcode: ${{ inputs.xcode }}
         command: ${{ inputs.subcommand }}
-        suffix: ${{ inputs.suffix }}
+        suffix: ${{ inputs.cache-derived-data-suffix }}
     - name: Set IgnoreFileSystemDeviceInodeChanges flag
       shell: bash
       run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
@@ -118,7 +118,7 @@ runs:
           BEAUTIFY="${{ inputs.beautify }}"
     - name: Commit swift-format
       if: inputs.command == swift-format
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: ${{ inputs.swift-format-commit-message }}
         branch: ${{ inputs.swift-format-branch }}

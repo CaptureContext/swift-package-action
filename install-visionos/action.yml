@@ -11,7 +11,7 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-install-visionos"
 

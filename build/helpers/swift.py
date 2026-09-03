@@ -8,12 +8,14 @@ def build_for_library_evolution(scheme):
       "--target", scheme,
       "-Xswiftc", "-emit-module-interface",
       "-Xswiftc", "-enable-library-evolution"
-    ]
+    ],
+    check=True
   )
 
 def benchmark(scheme):
   subprocess.run(
     ["swift", "run"] + [
       "--configuration", "release", scheme
-    ]
+    ],
+    check=True
   )

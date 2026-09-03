@@ -75,20 +75,20 @@ outputs:
     value: ${{ steps.resolve-cache-keys.outputs.resolved-restore-keys }}
   cache-hit:
     description: 'A boolean value to indicate an exact match was found for the primary key'
-    value: ${{ steps.cache-step.outputs.cache-hit }}
+    value: ${{ steps.cache.outputs.cache-hit }}
 
 runs:
   using: 'composite'
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-cache"
 
     - id: resolve-cache-keys
       name: Resolve cache keys
-      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.13
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.14
       with:
         prefix: ${{ inputs.prefix }}
         arg1: ${{ inputs.arg1 }}
@@ -100,7 +100,7 @@ runs:
 
     - id: cache
       name: Cache ${{ inputs.prefix }}
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: ${{ inputs.path }}
         upload-chunk-size: ${{ inputs.upload-chunk-size }}

@@ -71,13 +71,13 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-cache-save"
 
     - id: resolve-cache-keys
       name: Resolve cache keys
-      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.13
+      uses: capturecontext/swift-package-action/cache/resolve-keys@3.0-beta.14
       with:
         prefix: ${{ inputs.prefix }}
         arg1: ${{ inputs.arg1 }}
@@ -88,7 +88,7 @@ runs:
         suffix: ${{ inputs.suffix }}
 
     - name: Save ${{ inputs.prefix }}
-      uses: actions/cache/save@v5
+      uses: actions/cache/save@v6
       with:
         path: ${{ inputs.path }}
         upload-chunk-size: ${{ inputs.upload-chunk-size }}

@@ -58,29 +58,29 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-build"
 
     - id: setup-venv
       name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.13
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.14
 
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.13
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.14
       with:
         version: ${{ inputs.xcode }}
 
     - id: install-visionos
       name: Install visionOS runtime
       if: inputs.platform == 'visionOS'
-      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.13
+      uses: capturecontext/swift-package-action/install-visionos@3.0-beta.14
 
     - id: cache-derived-data
       name: Cache derived data
       if: inputs.cache-derived-data == 'true'
-      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.13
+      uses: capturecontext/swift-package-action/cache/derived-data@3.0-beta.14
       with:
         path: ${{ inputs.cache-derived-data-path }}
         prefix: ${{ inputs.cache-derived-data-prefix }}

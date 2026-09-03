@@ -37,17 +37,17 @@ runs:
   steps:
     - id: print-action-path
       name: Print GITHUB_ACTION_PATH
-      uses: capturecontext/swift-package-action/print-action@3.0-beta.13
+      uses: capturecontext/swift-package-action/print-action@3.0-beta.14
       with:
         name: "swift-package-format"
 
     - id: setup-venv
       name: Setup venv
-      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.13
+      uses: capturecontext/swift-package-action/setup-venv@3.0-beta.14
 
     - id: select-xcode
       name: Select Xcode ${{ inputs.xcode }}
-      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.13
+      uses: capturecontext/swift-package-action/xcode-select@3.0-beta.14
       with:
         version: ${{ inputs.xcode }}
 
@@ -60,12 +60,12 @@ runs:
         cd "${{ inputs.working-directory }}"
         make format \
           -f "$GITHUB_ACTION_PATH"/Makefile \
-          FORMATTER="${{ inputs.formatter }}"
+          FORMATTER="${{ inputs.formatter }}" \
           CONFIG="${{ inputs.config }}"
 
     - id: commit-formatting
       name: Commit formatting
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: ${{ inputs.commit-message }}
         branch: ${{ inputs.branch }}

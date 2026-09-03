@@ -2,21 +2,19 @@ import subprocess
 import json
 
 def warm(destination):
+  if "Simulator,id=" not in destination:
+    print("Skipping simulator warm-up for a non-simulator destination.")
+    return
+
   platform_id = destination.split("id=")[-1]
-  
-  if platform_id:
-    if platform_id.startswith("macOS"):
-      print("Couldn't warm simulator. Reason: macOS simulators are not supported.")
-      return
+  boot = ["xcrun", "simctl", "boot", platform_id]
+  subprocess.run(boot, check=True)
 
-    boot = ["xcrun", "simctl", "boot", platform_id]
-    subprocess.run(boot, check=True)
-
-    open = [
-        "open", "-a", "Simulator", "--args",
-        "-CurrentDeviceUDID", platform_id
-    ]
-    subprocess.run(open, check=True)
+  open_simulator = [
+    "open", "-a", "Simulator", "--args",
+    "-CurrentDeviceUDID", platform_id
+  ]
+  subprocess.run(open_simulator, check=True)
 
 def get_destination(platform):
   if platform == "iOS":
@@ -36,9 +34,10 @@ def get_destination(platform):
 
 def udid_for(platform, device):
   result = subprocess.run(
-      ["xcrun", "simctl", "list", "--json", "devices", "available", device],
-      capture_output=True,
-      text=True
+    ["xcrun", "simctl", "list", "--json", "devices", "available", device],
+    capture_output=True,
+    check=True,
+    text=True
   )
 
   devices_json = json.loads(result.stdout)
@@ -60,4 +59,4 @@ def udid_for(platform, device):
 
   if matching_devices:
     return matching_devices[0].get("udid", "")
-  return ""
+  raise RuntimeError(f"No available {platform} simulator matching {device}.")

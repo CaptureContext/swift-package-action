@@ -13,7 +13,10 @@ if __name__ == "__main__":
   scheme = os.environ.get("SCHEME", "Unspecified")
   workspace = os.environ.get("WORKSPACE", ".swiftpm/xcode/package.xcworkspace")
   
-  derived_data_path = os.path.expanduser(f"~/.derivedData/{config}")
+  derived_data_base_path = os.path.expanduser(
+    os.environ.get("DERIVED_DATA_PATH", "~/.derivedData")
+  )
+  derived_data_path = os.path.join(derived_data_base_path, config)
   destination = simulator.get_destination(platform)
 
   if command == "destination":
